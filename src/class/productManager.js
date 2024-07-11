@@ -65,7 +65,6 @@ class ProductManager {
         }
 
         const productFiltered = products.filter(product => product.id !== id);
-        console.log("🚀 ~ ProductManager ~ deleteProductById ~ productFiltered:", productFiltered)
         this.productList = [...productFiltered];
 
         await fs.promises.writeFile(this.path, JSON.stringify({ data: productFiltered }), 'utf-8');

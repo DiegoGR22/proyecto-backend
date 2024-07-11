@@ -7,7 +7,6 @@ const router = Router();
 const cartManager = new CartManager(__dirname + '/data/cart.json');
 
 router.post('/', async (req, res) => {
-    // console.log("Entro en el post");
 
     await cartManager.addCart(); 
 
@@ -37,36 +36,32 @@ router.put('/:pid', async (req, res) => {
         const cartUpdate = await cartManager.updateCartById(pid, updatedCart);
 
         if (cartUpdate === null) {
-            res.status(404).json({ message: 'Carto no encontrado' });
+            res.status(404).json({ message: 'Carrito no encontrado' });
         } else {
-            res.status(200).json({ message: 'Carto actualizado!', cartUpdate });
+            res.status(200).json({ message: 'Carrito actualizado!', cartUpdate });
         }
     } catch (error) {
         // Manejo de errores generales
         console.error(error);
-        res.status(500).json({ message: 'Error al actualizar el carto' });
+        res.status(500).json({ message: 'Error al actualizar el carrito' });
     }
 });
 
 router.delete('/:pid', async (req, res) => {
     const { pid } = req.params
 
-    // const cartFind = await cartManager.deleteCartById(pid);
-
-    // res.status(201).json({ message: 'Carto eliminado correctamente' });
-
     try {
         const cartDelete = await cartManager.deleteCartById(pid);
 
         if (cartDelete === null) {
-            res.status(404).json({ message: 'Carto no encontrado' });
+            res.status(404).json({ message: 'Carrito no encontrado' });
         } else {
-            res.status(200).json({ message: 'Carto eliminado!', cartDelete });
+            res.status(200).json({ message: 'Carrito eliminado!', cartDelete });
         }
     } catch (error) {
         // Manejo de errores generales
         console.error(error);
-        res.status(500).json({ message: 'Error al actualizar el carto' });
+        res.status(500).json({ message: 'Error al actualizar el carrito' });
     }
 })
 

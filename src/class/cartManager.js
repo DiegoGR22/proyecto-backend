@@ -7,6 +7,18 @@ class CartManager {
     constructor(path){
         this.path = path;
         this.cartList = [];
+        this.init();
+    }
+
+    async init(){
+        try{
+            await fs.promises.access(this.path, fs.constants.F_OK);
+            console.log("existe")
+        }
+        catch(err){
+            await fs.promises.writeFile(this.path, JSON.stringify({ data: this.cartList}), 'utf-8');
+            console.log("creado")
+        }
     }
 
     async getCartById(id){
@@ -27,14 +39,8 @@ class CartManager {
 
         const newCart = {
             id: uniqueId,
-            title: 'Arroz',
-            description: 'Hijo de gallina',
-            code: '123',
+            products: 'products',
             price: 20,
-            status: true,
-            stock: 10,
-            category: 'abarrotes',
-            thumbnails: [ 'data' ]
         }
 
         this.cartList.push(newCart);
@@ -65,7 +71,6 @@ class CartManager {
         }
 
         const cartFiltered = carts.filter(cart => cart.id !== id);
-        console.log("🚀 ~ CartManager ~ deleteCartById ~ cartFiltered:", cartFiltered)
         this.cartList = [...cartFiltered];
 
         await fs.promises.writeFile(this.path, JSON.stringify({ data: cartFiltered }), 'utf-8');
