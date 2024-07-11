@@ -20,20 +20,20 @@ router.get('/', async (req, res) => {
     res.status(200).json({ message: cartList });
 })
 
-router.get('/:pid', async (req, res) => {
-    const { pid } = req.params
+router.get('/:cid', async (req, res) => {
+    const { cid } = req.params
 
-    const cartFind = await cartManager.getCartById(pid);
+    const cartFind = await cartManager.getCartById(cid);
 
     res.status(201).json({ message: cartFind });
 })
 
-router.put('/:pid', async (req, res) => {
-    const { pid } = req.params
+router.put('/:cid', async (req, res) => {
+    const { cid } = req.params
     const updatedCart = req.body
 
     try {
-        const cartUpdate = await cartManager.updateCartById(pid, updatedCart);
+        const cartUpdate = await cartManager.updateCartById(cid, updatedCart);
 
         if (cartUpdate === null) {
             res.status(404).json({ message: 'Carrito no encontrado' });
@@ -47,11 +47,11 @@ router.put('/:pid', async (req, res) => {
     }
 });
 
-router.delete('/:pid', async (req, res) => {
-    const { pid } = req.params
+router.delete('/:cid', async (req, res) => {
+    const { cid } = req.params
 
     try {
-        const cartDelete = await cartManager.deleteCartById(pid);
+        const cartDelete = await cartManager.deleteCartById(cid);
 
         if (cartDelete === null) {
             res.status(404).json({ message: 'Carrito no encontrado' });
