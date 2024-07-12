@@ -40,13 +40,13 @@ class ProductManager {
 
         const newProduct = {
             id: uniqueId,
-            title: 'Arroz',
-            description: 'Hijo de gallina',
-            code: '123',
-            price: 20,
+            title: 'iPhone',
+            description: 'Apple',
+            code: '12345',
+            price: 200,
             status: true,
-            stock: 10,
-            category: 'abarrotes',
+            stock: 5,
+            category: 'tecnologia',
             thumbnails: [ 'data' ]
         }
 

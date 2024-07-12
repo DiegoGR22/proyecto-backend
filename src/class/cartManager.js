@@ -34,14 +34,14 @@ class CartManager {
         return [...this.cartList]
     }
 
-    async addCart(cart){
+    async addCart(cart= { products: [] }){
 
         await this.getCartList();
 
         const newCart = {
             id: uniqueId,
-            products: ['product1', 'product2'],
-            price: 20,
+            // products: [{"product": "product1", "quantity": 1}, {"product": "product2", "quantity": 2}],
+            products: cart.products || []
         }
 
         this.cartList.push(newCart);
@@ -77,6 +77,31 @@ class CartManager {
         await fs.promises.writeFile(this.path, JSON.stringify({ data: cartFiltered }), 'utf-8');
 
         return cartFiltered;
+    }
+
+    async addProductOnCart(cid, pid){
+
+        const carts = await this.getCartList();
+        const cartIndex = carts.findIndex(cart => cart.id === cid);
+
+        if(cartIndex === -1){
+            return null;
+        }
+
+        const cart = carts[cartIndex];
+        const productIndex = cart.products.findIndex(product => product.id === pid);
+
+        if(productIndex === -1){
+            cart.products.push({ id: pid, quantity: 1 });
+        } else {
+            cart.products[productIndex].quantity += 1;
+        }
+
+        carts[cartIndex] = cart;
+
+        await fs.promises.writeFile(this.path, JSON.stringify({ data: carts }), 'utf-8');
+
+        return cart;
     }
 }
 

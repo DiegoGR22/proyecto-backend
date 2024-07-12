@@ -1,10 +1,12 @@
 import { Router } from "express";
 import CartManager from '../class/cartManager.js';
+import ProductManager from "../class/productManager.js";
 import { __dirname } from '../utils.js';
 
 const router = Router();
 
 const cartManager = new CartManager(__dirname + '/data/cart.json');
+const productManager = new ProductManager(__dirname + '/data/product.json');
 
 router.post('/', async (req, res) => {
 
@@ -71,6 +73,29 @@ router.delete('/:cid', async (req, res) => {
         // Manejo de errores generales
         console.error(error);
         res.status(500).json({ message: 'Error al actualizar el carrito' });
+    }
+})
+
+router.post('/:cid/products/:pid', async (req, res) => {
+    const { cid, pid } = req.params;
+
+    try {
+        const product = await productManager.getProductById(pid);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        const cartUpdate = await cartManager.addProductOnCart(cid, pid);
+
+        if (cartUpdate === null) {
+            return res.status(404).json({ message: 'Carrito no encontrado' });
+        }
+
+        return res.status(201).json({ message: 'Producto añadido al carrito!', cart: cartUpdate });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error al añadir el producto al carrito' });
     }
 })
 
