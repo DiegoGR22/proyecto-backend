@@ -13,7 +13,7 @@ class CartManager {
     async init(){
         try{
             await fs.promises.access(this.path, fs.constants.F_OK);
-            console.log("existe")
+            // console.log("existe")
         }
         catch(err){
             await fs.promises.writeFile(this.path, JSON.stringify({ data: this.cartList}), 'utf-8');
@@ -24,7 +24,8 @@ class CartManager {
     async getCartById(id){
         await this.getCartList();
 
-        return this.cartList.find(cart => cart.id === id);
+        const cart = this.cartList.find(cart => cart.id === id);
+        return cart || null;
     }
 
     async getCartList(){
@@ -39,7 +40,7 @@ class CartManager {
 
         const newCart = {
             id: uniqueId,
-            products: 'products',
+            products: ['product1', 'product2'],
             price: 20,
         }
 

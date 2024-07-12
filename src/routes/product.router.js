@@ -7,7 +7,6 @@ const router = Router();
 const productManager = new ProductManager(__dirname + '/data/product.json');
 
 router.post('/', async (req, res) => {
-    // console.log("Entro en el post");
 
     await productManager.addProduct(); 
 
@@ -22,11 +21,19 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:pid', async (req, res) => {
-    const { pid } = req.params
+    try{
+        const { pid } = req.params
+        const productFind = await productManager.getProductById(pid);
 
-    const productFind = await productManager.getProductById(pid);
+        if(!productFind){
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
 
-    res.status(201).json({ message: productFind });
+        return res.status(200).json({ message: 'Producto encontrado', productFind });
+    }
+    catch(err){
+        return res.status(500).json({ message: 'Error al buscar el producto', error: err.message });
+    }
 })
 
 router.put('/:pid', async (req, res) => {
@@ -50,10 +57,6 @@ router.put('/:pid', async (req, res) => {
 
 router.delete('/:pid', async (req, res) => {
     const { pid } = req.params
-
-    // const productFind = await productManager.deleteProductById(pid);
-
-    // res.status(201).json({ message: 'Producto eliminado correctamente' });
 
     try {
         const productDelete = await productManager.deleteProductById(pid);

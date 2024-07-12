@@ -21,11 +21,20 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:cid', async (req, res) => {
-    const { cid } = req.params
+    try{
+        const { cid } = req.params
+        const cartFind = await cartManager.getCartById(cid);
 
-    const cartFind = await cartManager.getCartById(cid);
+        if(!cartFind){
+            return res.status(404).json({ message: 'Carrito no encontrado' });
+        }
 
-    res.status(201).json({ message: cartFind });
+        return res.status(200).json({ message: 'Carrito encontrado', cartFind });
+    }
+    catch(err){
+        return res.status(500).json({ message: 'Error al buscar el carrito', error: err.message });
+    }
+
 })
 
 router.put('/:cid', async (req, res) => {

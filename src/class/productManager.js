@@ -7,12 +7,25 @@ class ProductManager {
     constructor(path){
         this.path = path;
         this.productList = [];
+        this.init();
+    }
+
+    async init(){
+        try{
+            await fs.promises.access(this.path, fs.constants.F_OK);
+            // console.log("existe")
+        }
+        catch(err){
+            await fs.promises.writeFile(this.path, JSON.stringify({ data: this.cartList}), 'utf-8');
+            console.log("creado")
+        }
     }
 
     async getProductById(id){
         await this.getProductList();
 
-        return this.productList.find(product => product.id === id);
+        const product = this.productList.find(product => product.id === id);
+        return product || null;
     }
 
     async getProductList(){
