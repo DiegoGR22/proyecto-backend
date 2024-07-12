@@ -34,20 +34,20 @@ class ProductManager {
         return [...this.productList]
     }
 
-    async addProduct(product){
+    async addProduct(productData){
 
         await this.getProductList();
 
         const newProduct = {
             id: uniqueId,
-            title: 'iPhone',
-            description: 'Apple',
-            code: '12345',
-            price: 200,
-            status: true,
-            stock: 5,
-            category: 'tecnologia',
-            thumbnails: [ 'data' ]
+            title: productData.title,
+            description: productData.description,
+            code: productData.code,
+            price: productData.price,
+            status: productData.status,
+            stock: productData.stock,
+            category: productData.category,
+            thumbnails: productData.thumbnails
         }
 
         this.productList.push(newProduct);

@@ -7,10 +7,15 @@ const router = Router();
 const productManager = new ProductManager(__dirname + '/data/product.json');
 
 router.post('/', async (req, res) => {
+    try{
+        const productData = req.body;
+        await productManager.addProduct(productData); 
+        res.status(201).json({ message: 'Añadido!' });
+    } 
+    catch(err){
+        res.status(500).json({ message: 'Error al añadir el producto', error: err.message });
+    }
 
-    await productManager.addProduct(); 
-
-    res.status(201).json({ message: 'Añadido!' });
 })
 
 router.get('/', async (req, res) => {
