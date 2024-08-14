@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { generateUniqueId } from '../utils.js';
 
-const uniqueId = generateUniqueId();
+// const uniqueId = generateUniqueId();
 
 class ProductManager {
     constructor(path){
@@ -34,12 +34,27 @@ class ProductManager {
         return [...this.productList]
     }
 
+    validateProductData(productData) {
+        if (!productData.title || !productData.description || !productData.code || 
+            isNaN(productData.price) || productData.price <= 0 || 
+            isNaN(productData.stock) || productData.stock < 0 || !productData.category) {
+            return false;
+        }
+        return true;
+    }
+
     async addProduct(productData){
+        // Validar datos del producto
+        if (!this.validateProductData(productData)) {
+            console.error("Datos inválidos")
+            throw new Error('Datos del producto no válidos');
+        }
 
         await this.getProductList();
 
         const newProduct = {
-            id: uniqueId,
+            // id: uniqueId,
+            id: generateUniqueId(),
             title: productData.title,
             description: productData.description,
             code: productData.code,
@@ -49,6 +64,8 @@ class ProductManager {
             category: productData.category,
             thumbnails: productData.thumbnails
         }
+
+        console.log("Agregando nuevo producto:", newProduct); // Log para depuración
 
         this.productList.push(newProduct);
         await fs.promises.writeFile(this.path, JSON.stringify({ data: this.productList}))

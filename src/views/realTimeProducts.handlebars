@@ -1,0 +1,21 @@
+<h1>Real Time Products</h1>
+<a href="/"><button class="btn1">Home</button></a>
+
+<div class="add-form">
+    <h2>Añadir Producto</h2>
+    <form action="">
+        <input id="title" type="text" placeholder="Título" required>
+        <input id="description" type="text" placeholder="Descripción" required>
+        <input id="code" type="text" placeholder="Código" required>
+        <input id="price" type="number" placeholder="Precio" required>
+        <input id="stock" type="number" placeholder="Stock" required>
+        <input id="category" type="text" placeholder="Categoria" required>
+        <br>
+        <button id="addButton" onclick="addProduct()">Añadir</button>
+    </form>
+</div>
+
+<ul id="product-list"></ul>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="./RTP.js"></script>

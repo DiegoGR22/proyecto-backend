@@ -1,0 +1,68 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.product-div{ 
+    border: 1px black solid;
+    width: 200px;
+    display: inline-block;
+    padding: 20px;
+    margin: 0px 0px 10px 10px;
+}
+
+ul {
+    list-style: none;
+}
+
+h1 {
+    margin: 10px 10px;
+}
+
+.add-form{
+    display: block;
+    width: 300px;
+    margin: 0px 0px 10px 10px;
+}
+
+#btn-delete{
+    color: #fff;
+    background-color: crimson;
+    font-size: medium;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#addButton{
+    color: #fff;
+    background-color: forestgreen;
+    font-size: medium;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btn1 {
+    background-color: #4CAF50; /* Color de fondo verde */
+    border: none; /* Sin borde */
+    color: white; /* Texto en color blanco */
+    padding: 10px 20px; /* Espaciado interno */
+    text-align: center; /* Centrar el texto */
+    text-decoration: none; /* Sin subrayado */
+    display: inline-block; /* Mostrar en línea */
+    font-size: 16px; /* Tamaño de fuente */
+    margin: 4px 2px; /* Margen */
+    cursor: pointer; /* Cambiar cursor a mano al pasar por encima */
+    border-radius: 12px; /* Bordes redondeados */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.btn1:hover {
+    background-color: #45a049; /* Color de fondo más oscuro al pasar el ratón */
+}
