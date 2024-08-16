@@ -22,13 +22,13 @@ socket.on('realTime', (products) => {
         description.innerHTML = product.description;
 
         const price = document.createElement('p');
-        price.innerHTML = product.price;
+        price.innerHTML = `Precio: ${product.price}`;
 
         const stock = document.createElement('p');
-        stock.innerHTML = product.stock;
+        stock.innerHTML = `Stock: ${product.stock}`;
 
         const category = document.createElement('p');
-        category.innerHTML = product.category;
+        category.innerHTML = `Categoría: ${product.category}`;
 
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = 'Eliminar';
