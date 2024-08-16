@@ -29,11 +29,13 @@ const httpServer = app.listen(PORT, () => {
 
 const io = new Server(httpServer);
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log("New connection established", socket.id)
 
     try{
-        socket.emit('realTime', productManager.productList);
+        const products = await productManager.getProductList();
+        socket.emit('home', products);
+        socket.emit('realTime', products);
     } catch(err) {
         console.error("Error para obtener la productList", err);
     }
@@ -64,5 +66,3 @@ io.on('connection', (socket) => {
         }
     })
 })
-
-// TODO: DESAPARECE LA LISTA AL SEGUNDO

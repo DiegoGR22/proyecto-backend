@@ -1,19 +1,7 @@
 <h1>Lista de Productos</h1>
 <a href="/realtimeproducts"><button class="btn1">Agregar Producto</button></a>
 
-<ul>
-    {{#each product}}
-    <div class="product-div">
-        <li>
-            <h2>{{title}}</h2>
-            <p>{{description}}</p>
-            <p>Precio: {{price}}</p>
-            <p>Stock: {{stock}}</p>
-            <p>Categoría: {{category}}</p>
-        </li>
-    </div>
-    {{/each}}
-</ul>
+<div id="p-container"></div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="./RTP.js"></script>
+<script src="./home.js"></script>
