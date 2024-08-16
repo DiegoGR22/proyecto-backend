@@ -26,7 +26,7 @@ h1 {
     margin: 0px 0px 10px 10px;
 }
 
-#btn-delete{
+.btn-delete{
     color: #fff;
     background-color: crimson;
     font-size: medium;

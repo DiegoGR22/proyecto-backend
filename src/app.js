@@ -53,17 +53,16 @@ io.on('connection', (socket) => {
     //     io.emit('updateProducts', productManager.getProductList());
     // })
 
-    // socket.on('deleteProduct', async (productId) => {
+    socket.on('deleteProduct', async (productId) => {
         
-    //     try {
-    //         await productManager.deleteProductById(productId);
-    //         const products = await productManager.getProductList();
-    //         io.emit('realTime', products);
-    //     } catch(err) {
-    //         console.error("Error al eliminar el producto", err);
-    //     }
-    // })
+        try {
+            await productManager.deleteProductById(productId);
+            const products = await productManager.getProductList();
+            io.emit('realTime', products);
+        } catch(err) {
+            console.error("Error al eliminar el producto", err);
+        }
+    })
 })
 
 // TODO: DESAPARECE LA LISTA AL SEGUNDO
-// TODO: DELETE PRODUCT

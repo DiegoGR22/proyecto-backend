@@ -10,19 +10,40 @@ socket.on('realTime', (products) => {
 
     products.forEach(product => {
 
-        const productHTML = `
-                    <div class="product-div">
-                        <li>
-                            <h2>${product.title}</h2>
-                            <p>${product.description}</p>
-                            <p>Precio: ${product.price}</p>
-                            <p>Stock: ${product.stock}</p>
-                            <p>Categoría: ${product.category}</p>
-                            <button id="btn-delete" onclick="deleteProduct(product.id)">Eliminar</button>
-                        </li>
-                    </div>
-                `;
-                productList.innerHTML += productHTML;
+        const div = document.createElement('div');
+        div.classList.add('product-div');
+
+        const li = document.createElement('li');
+        
+        const title = document.createElement('h2');
+        title.innerHTML = product.title;
+
+        const description = document.createElement('p');
+        description.innerHTML = product.description;
+
+        const price = document.createElement('p');
+        price.innerHTML = product.price;
+
+        const stock = document.createElement('p');
+        stock.innerHTML = product.stock;
+
+        const category = document.createElement('p');
+        category.innerHTML = product.category;
+
+        const btnDelete = document.createElement('button');
+        btnDelete.innerHTML = 'Eliminar';
+        btnDelete.classList.add("btn-delete")
+        btnDelete.onclick = () => deleteProduct(product.id);
+
+        div.appendChild(li);
+        li.appendChild(title);
+        li.appendChild(description);
+        li.appendChild(price);
+        li.appendChild(stock);
+        li.appendChild(category);
+        li.appendChild(btnDelete);
+
+        productList.appendChild(div);
     });
 })
 
@@ -101,7 +122,7 @@ function clearForm() {
 //     deleteProduct(product.id);
 // })
 
-// function deleteProduct(productId) {
-//     socket.emit('deleteProduct', productId);
-//     console.log("Producto eliminado: " + productId);
-// }
+function deleteProduct(productId) {
+    socket.emit('deleteProduct', productId);
+    console.log("Producto eliminado: " + productId);
+}
