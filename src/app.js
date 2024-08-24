@@ -5,9 +5,11 @@ import ProductRouter, { productManager } from './routes/product.router.js';
 import CartRouter from './routes/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
+import mongoose from 'mongoose';
 
 const app = express();
 const PORT = 8080 || 3000;
+const uri = 'mongodb+srv://diegoguerrero2:dJL6qZ9qP3dV6Hwi@coderback1.dyu0t.mongodb.net/?retryWrites=true&w=majority&appName=CoderBack1'
 
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
@@ -27,6 +29,12 @@ const httpServer = app.listen(PORT, () => {
     console.log(`Server listening on PORT ${PORT}`);
 });
 
+mongoose.connect(uri, {
+    dbName: 'proy-back'
+}) .then(() => {
+    console.log("Database connected successfully")
+})
+
 const io = new Server(httpServer);
 
 io.on('connection', async (socket) => {
@@ -35,6 +43,7 @@ io.on('connection', async (socket) => {
     try{
         const products = await productManager.getProductList();
         socket.emit('home', products);
+        socket.emit('products', products);
         socket.emit('realTime', products);
     } catch(err) {
         console.error("Error para obtener la productList", err);

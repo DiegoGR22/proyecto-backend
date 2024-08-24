@@ -14,8 +14,12 @@ const router = Router();
 //     }
 // })
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     res.render('home');
+})
+
+router.get('/products', (req, res) => {
+    res.render('products');
 })
 
 router.get('/realtimeproducts', (req, res) => {

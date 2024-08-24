@@ -1,28 +1,48 @@
 import { Router } from "express";
 import ProductManager from '../class/productManager.js';
 import { __dirname } from '../utils.js';
+import { ProductModel } from "../models/product.model.js";
 
 const router = Router();
 
 export const productManager = new ProductManager(__dirname + '/data/product.json');
 
-router.post('/', async (req, res) => {
-    try{
-        const productData = req.body;
-        await productManager.addProduct(productData); 
-        res.status(201).json({ message: 'Añadido!' });
-    } 
-    catch(err){
-        res.status(500).json({ message: 'Error al añadir el producto', error: err.message });
-    }
+// router.post('/', async (req, res) => {
+//     try{
+//         const productData = req.body;
+//         await productManager.addProduct(productData); 
+//         res.status(201).json({ message: 'Añadido!' });
+//     } 
+//     catch(err){
+//         res.status(500).json({ message: 'Error al añadir el producto', error: err.message });
+//     }
+// })
 
-})
-
-router.get('/', async (req, res) => {
+router.get('/fs', async (req, res) => {
 
     const productList = await productManager.getProductList(); 
 
     res.status(200).json({ message: productList });
+})
+
+router.get('/', async (req, res) => {
+    try {
+        const result = await ProductModel.find();
+        res.status(200).json({ message: "Products found!", payload: result });
+    } catch (error) {
+        res.status(500).json({ message: "Products not found!" });
+    }
+});
+
+router.post('/', async (req, res) => {
+    const product = req.body;
+
+    try {
+        const result = await ProductModel.create(product);
+        res.status(201).json({ message: "Product created", payload: result });
+    } catch (error) {
+        res.status(500).json({ message: "Product not created!" });
+    }
 })
 
 router.get('/:pid', async (req, res) => {

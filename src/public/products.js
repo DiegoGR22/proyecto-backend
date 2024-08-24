@@ -4,7 +4,7 @@ socket.on('connect', () => {
     console.log("Connected on Home", socket.id)
 })
 
-socket.on('home', (products) => {
+socket.on('products', (products) => {
     const productContainer = document.getElementById('p-container');
     productContainer.innerHTML = '';
 
