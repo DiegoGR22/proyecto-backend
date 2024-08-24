@@ -5,7 +5,7 @@ import { __dirname } from '../utils.js';
 
 const router = Router();
 
-const cartManager = new CartManager(__dirname + '/data/cart.json');
+export const cartManager = new CartManager(__dirname + '/data/cart.json');
 const productManager = new ProductManager(__dirname + '/data/product.json');
 
 router.post('/', async (req, res) => {

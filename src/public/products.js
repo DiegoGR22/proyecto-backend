@@ -1,7 +1,7 @@
 const socket = io();
 
 socket.on('connect', () => {
-    console.log("Connected on Home", socket.id)
+    console.log("Connected on Products", socket.id)
 })
 
 socket.on('products', (products) => {
@@ -30,13 +30,24 @@ socket.on('products', (products) => {
         const category = document.createElement('p');
         category.innerHTML = `Categoría: ${product.category}`;
 
+        const btnAdd = document.createElement('button');
+        btnAdd.innerHTML = 'Add';
+        btnAdd.classList.add("btn-add")
+        btnAdd.onclick = () => addProductToCart(product.id);
+
         div.appendChild(li);
         li.appendChild(title);
         li.appendChild(description);
         li.appendChild(price);
         li.appendChild(stock);
         li.appendChild(category);
+        li.appendChild(btnAdd);
 
         productContainer.appendChild(div);
     });
 });
+
+// function addProductToCart(carritoId, productId) {
+//     socket.emit('addProductToCart', carritoId, productId);
+//     console.log("Producto agregado: " + productId + "al carrito: " + carritoId);
+// }

@@ -45,6 +45,21 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.post('/many', async (req, res) => {
+    const products = req.body;
+
+    if(!Array.isArray(products)) {
+        return res.status(400).json ({ message: "Input data should be an array" })
+    }
+
+    try {
+        const result = await ProductModel.insertMany(products);
+        res.status(201).json({ message: "Product created", payload: result });
+    } catch (error) {
+        res.status(500).json({ message: "Product not created!" });
+    }
+})
+
 router.get('/:pid', async (req, res) => {
     try{
         const { pid } = req.params

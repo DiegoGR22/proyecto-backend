@@ -37,6 +37,24 @@ h1 {
     cursor: pointer;
 }
 
+.btn-add{
+    /* color: #fff; */
+    background-color: orange;
+    font-size: medium;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.btn-add:hover{
+    background-color: green;
+    color: #fff;
+    scale: 1.15;
+    transition: all .2s ease;
+}
+
 #addButton{
     color: #fff;
     background-color: forestgreen;

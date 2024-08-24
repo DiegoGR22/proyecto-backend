@@ -2,14 +2,16 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
 import ProductRouter, { productManager } from './routes/product.router.js';
-import CartRouter from './routes/cart.router.js';
+import CartRouter, { cartManager } from './routes/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
 import mongoose from 'mongoose';
+import 'dotenv/config';
+import { ProductModel } from './models/product.model.js';
 
 const app = express();
 const PORT = 8080 || 3000;
-const uri = 'mongodb+srv://diegoguerrero2:dJL6qZ9qP3dV6Hwi@coderback1.dyu0t.mongodb.net/?retryWrites=true&w=majority&appName=CoderBack1'
+const uri = process.env.MONGODB_URI;
 
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
@@ -41,7 +43,8 @@ io.on('connection', async (socket) => {
     console.log("New connection established", socket.id)
 
     try{
-        const products = await productManager.getProductList();
+        const products = await ProductModel.find()
+        // const products = await productManager.getProductList();
         socket.emit('home', products);
         socket.emit('products', products);
         socket.emit('realTime', products);
@@ -72,6 +75,17 @@ io.on('connection', async (socket) => {
             io.emit('realTime', products);
         } catch(err) {
             console.error("Error al eliminar el producto", err);
+        }
+    })
+
+    socket.on('addProductToCart', async (cartId ,productId) => {
+        
+        try {
+            await cartManager.addProductOnCart(cartId, productId);
+            const products = await productManager.getProductList();
+            io.emit('products', products);
+        } catch(err) {
+            console.error("Error al agregar el producto al carrito", err);
         }
     })
 })

@@ -3,5 +3,13 @@
 
 <div id="p-container"></div>
 
+<ul>
+    {{#each products}}
+        <li>
+            <p>{{this.title}}</p>
+        </li>
+    {{/each}}
+</ul>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="./products.js"></script>
