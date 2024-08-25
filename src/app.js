@@ -44,7 +44,6 @@ io.on('connection', async (socket) => {
 
     try{
         const products = await ProductModel.find()
-        // const products = await productManager.getProductList();
         socket.emit('home', products);
         socket.emit('products', products);
         socket.emit('realTime', products);
@@ -54,8 +53,8 @@ io.on('connection', async (socket) => {
 
     socket.on('newProduct', async (product) => {
         try {
-            await productManager.addProduct(product);
-            const products = await productManager.getProductList();
+            await ProductModel.create(product);
+            const products = await ProductModel.find()
             io.emit('realTime', products);
         } catch(err) {
             console.error("Error al agregar el producto", err);
@@ -70,22 +69,22 @@ io.on('connection', async (socket) => {
     socket.on('deleteProduct', async (productId) => {
         
         try {
-            await productManager.deleteProductById(productId);
-            const products = await productManager.getProductList();
+            await ProductModel.findByIdAndDelete(productId);
+            const products = await ProductModel.find().lean();
             io.emit('realTime', products);
         } catch(err) {
             console.error("Error al eliminar el producto", err);
         }
     })
 
-    socket.on('addProductToCart', async (cartId ,productId) => {
+    // socket.on('addProductToCart', async (cartId ,productId) => {
         
-        try {
-            await cartManager.addProductOnCart(cartId, productId);
-            const products = await productManager.getProductList();
-            io.emit('products', products);
-        } catch(err) {
-            console.error("Error al agregar el producto al carrito", err);
-        }
-    })
+    //     try {
+    //         await cartManager.addProductOnCart(cartId, productId);
+    //         const products = await productManager.getProductList();
+    //         io.emit('products', products);
+    //     } catch(err) {
+    //         console.error("Error al agregar el producto al carrito", err);
+    //     }
+    // })
 })

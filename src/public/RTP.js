@@ -33,7 +33,7 @@ socket.on('realTime', (products) => {
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = 'Eliminar';
         btnDelete.classList.add("btn-delete")
-        btnDelete.onclick = () => deleteProduct(product.id);
+        btnDelete.onclick = () => deleteProduct(product._id);
 
         div.appendChild(li);
         li.appendChild(title);
@@ -99,14 +99,11 @@ function validateProduct() {
             return;
         }
     
-        addProduct(title, description, code, price, stock, category);
+
+        const data = { title, description, code, price, stock, category };
+        socket.emit('newProduct', data);
         clearForm();
     };
-    
-function addProduct(title, description, code, price, stock, category) {
-    const data = { title, description, code, price, stock, category };
-    socket.emit('newProduct', data);
-}
 
 function clearForm() {
     document.getElementById('title').value = '';
@@ -116,11 +113,6 @@ function clearForm() {
     document.getElementById('stock').value = '';
     document.getElementById('category').value = '';
 }
-
-// document.getElementById('btn-delete').addEventListener('click', (e) => {
-//     e.preventDefault()
-//     deleteProduct(product.id);
-// })
 
 function deleteProduct(productId) {
     socket.emit('deleteProduct', productId);

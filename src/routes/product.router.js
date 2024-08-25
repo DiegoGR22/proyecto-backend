@@ -7,33 +7,6 @@ const router = Router();
 
 export const productManager = new ProductManager(__dirname + '/data/product.json');
 
-// router.post('/', async (req, res) => {
-//     try{
-//         const productData = req.body;
-//         await productManager.addProduct(productData); 
-//         res.status(201).json({ message: 'Añadido!' });
-//     } 
-//     catch(err){
-//         res.status(500).json({ message: 'Error al añadir el producto', error: err.message });
-//     }
-// })
-
-router.get('/fs', async (req, res) => {
-
-    const productList = await productManager.getProductList();
-
-    res.status(200).json({ message: productList });
-})
-
-// router.get('/', async (req, res) => {
-//     try {
-//         const result = await ProductModel.find();
-//         res.status(200).json({ message: "Products found!", payload: result });
-//     } catch (error) {
-//         res.status(500).json({ message: "Products not found!" });
-//     }
-// });
-
 router.get('/', async (req, res) => {
     const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = req.query;
 
@@ -98,18 +71,19 @@ router.post('/many', async (req, res) => {
 })
 
 router.get('/:pid', async (req, res) => {
-    try {
-        const { pid } = req.params
-        const productFind = await productManager.getProductById(pid);
+    const { pid } = req.params
 
-        if (!productFind) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
+    try {
+        const product = await ProductModel.findById(pid);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
         }
 
-        return res.status(200).json({ message: 'Producto encontrado', productFind });
+        return res.status(200).json({ message: 'Product found!', product });
     }
     catch (err) {
-        return res.status(500).json({ message: 'Error al buscar el producto', error: err.message });
+        return res.status(500).json({ message: 'Error fetching product' });
     }
 })
 
@@ -118,17 +92,15 @@ router.put('/:pid', async (req, res) => {
     const updatedProduct = req.body
 
     try {
-        const productUpdate = await productManager.updateProductById(pid, updatedProduct);
-
-        if (productUpdate === null) {
-            res.status(404).json({ message: 'Producto no encontrado' });
+        const product = await ProductModel.findByIdAndUpdate(pid, updatedProduct, { new: true });
+        
+        if (product === null) {
+            res.status(404).json({ message: 'Product not found' });
         } else {
-            res.status(200).json({ message: 'Producto actualizado!', productUpdate });
+            res.status(200).json({ message: 'Product updated!', product });
         }
     } catch (error) {
-        // Manejo de errores generales
-        console.error(error);
-        res.status(500).json({ message: 'Error al actualizar el producto' });
+        res.status(500).json({ message: 'Error fetching product' });
     }
 });
 
@@ -136,17 +108,17 @@ router.delete('/:pid', async (req, res) => {
     const { pid } = req.params
 
     try {
-        const productDelete = await productManager.deleteProductById(pid);
+        const product = await ProductModel.findByIdAndDelete(pid);
 
-        if (productDelete === null) {
-            res.status(404).json({ message: 'Producto no encontrado' });
+        if (product === null) {
+            res.status(404).json({ message: 'Product not found' });
         } else {
-            res.status(200).json({ message: 'Producto eliminado!', productDelete });
+            res.status(200).json({ message: 'Producto deleted!', product });
         }
     } catch (error) {
         // Manejo de errores generales
         console.error(error);
-        res.status(500).json({ message: 'Error al actualizar el producto' });
+        res.status(500).json({ message: 'Error fetching product' });
     }
 })
 
