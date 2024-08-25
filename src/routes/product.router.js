@@ -20,19 +20,56 @@ export const productManager = new ProductManager(__dirname + '/data/product.json
 
 router.get('/fs', async (req, res) => {
 
-    const productList = await productManager.getProductList(); 
+    const productList = await productManager.getProductList();
 
     res.status(200).json({ message: productList });
 })
 
+// router.get('/', async (req, res) => {
+//     try {
+//         const result = await ProductModel.find();
+//         res.status(200).json({ message: "Products found!", payload: result });
+//     } catch (error) {
+//         res.status(500).json({ message: "Products not found!" });
+//     }
+// });
+
 router.get('/', async (req, res) => {
-    try {
-        const result = await ProductModel.find();
-        res.status(200).json({ message: "Products found!", payload: result });
-    } catch (error) {
-        res.status(500).json({ message: "Products not found!" });
+    const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = req.query;
+
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        lean: true
     }
-});
+
+    try {
+        const result = await productManager.getProducts({ page, limit, cat, status, sort });
+
+        // Crear los enlaces para la página anterior y siguiente
+        const prevLink = result.hasPrevPage ? `/products?page=${result.prevPage}&limit=${limit}&query=${query}&sort=${sort}` : null;
+        const nextLink = result.hasNextPage ? `/products?page=${result.nextPage}&limit=${limit}&query=${query}&sort=${sort}` : null;
+
+        // Estructura del objeto de respuesta
+        const response = {
+            status: "success",
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: prevLink,
+            nextLink: nextLink
+        };
+
+        res.status(200).json(response);
+
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching products " })
+    }
+})
 
 router.post('/', async (req, res) => {
     const product = req.body;
@@ -48,8 +85,8 @@ router.post('/', async (req, res) => {
 router.post('/many', async (req, res) => {
     const products = req.body;
 
-    if(!Array.isArray(products)) {
-        return res.status(400).json ({ message: "Input data should be an array" })
+    if (!Array.isArray(products)) {
+        return res.status(400).json({ message: "Input data should be an array" })
     }
 
     try {
@@ -61,17 +98,17 @@ router.post('/many', async (req, res) => {
 })
 
 router.get('/:pid', async (req, res) => {
-    try{
+    try {
         const { pid } = req.params
         const productFind = await productManager.getProductById(pid);
 
-        if(!productFind){
+        if (!productFind) {
             return res.status(404).json({ message: 'Producto no encontrado' });
         }
 
         return res.status(200).json({ message: 'Producto encontrado', productFind });
     }
-    catch(err){
+    catch (err) {
         return res.status(500).json({ message: 'Error al buscar el producto', error: err.message });
     }
 })
