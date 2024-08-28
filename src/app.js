@@ -1,8 +1,8 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
-import ProductRouter, { productManager } from './routes/product.router.js';
-import CartRouter, { cartManager } from './routes/cart.router.js';
+import ProductRouter from './routes/product.router.js';
+import CartRouter from './routes/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
 import mongoose from 'mongoose';
@@ -27,7 +27,6 @@ app.use('/api/carts', CartRouter);
 
 
 const httpServer = app.listen(PORT, () => {
-    // console.log("Server listening on")
     console.log(`Server listening on PORT ${PORT}`);
 });
 
