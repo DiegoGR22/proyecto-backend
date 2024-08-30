@@ -131,5 +131,40 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     }
 })
 
+router.put('/:cid/products/:pid', async (req, res) => {
+    const { cid, pid } = req.params
+    const { quantity } = req.body
+
+    const quantityToIncrease = parseInt(quantity, 10);
+    // console.log("🚀 ~ router.put ~ quantityToIncrease:", quantityToIncrease)
+
+    if (isNaN(quantityToIncrease)) {
+        return res.status(400).json({ message: "Invalid quantity value" });
+    }
+
+    try {
+        const cart = await CartModel.findById(cid);
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        const product = await ProductModel.findById(pid);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const updatedCart = await CartModel.findOneAndUpdate(
+            { _id: cid, 'products.product': pid },
+            { $inc: { 'products.$.quantity': quantity } },
+            {new: true}
+        );
+
+        return res.status(200).json({ message: 'Quantity updated successfully', payload: updatedCart });
+        
+    } catch (error) {
+        res.status(500).json({ message: "Error updating quantity of product from cart" })
+    }
+})
+
 
 export default router
