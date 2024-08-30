@@ -1,7 +1,23 @@
 <h1>Lista de Productos</h1>
+<a href="/"><button class="btn1">Home</button></a>
 <a href="/realtimeproducts"><button class="btn1">Agregar Producto</button></a>
 
 <div id="p-container"></div>
+
+<ul>
+    {{#each products}}
+        <div class="product-div">
+            <li>
+                <h2>{{this.title}}</h2>
+                <p>{{this.description}}</p>
+                <p>Precio: {{this.price}}</p>
+                <p>Stock: {{this.stock}}</p>
+                <p>Categoría: {{this.category}}</p>
+                <button class="btn-add" onclick="addProductToCart('66d13c0ee3e44f70aa5b8e22', '{{this._id}}')">Add</button>
+            </li>
+        </div>
+    {{/each}}
+</ul>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="./products.js"></script>

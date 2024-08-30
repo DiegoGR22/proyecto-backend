@@ -44,7 +44,6 @@ io.on('connection', async (socket) => {
 
     try{
         const products = await ProductModel.find()
-        socket.emit('home', products);
         socket.emit('products', products);
         socket.emit('realTime', products);
     } catch(err) {
@@ -56,6 +55,7 @@ io.on('connection', async (socket) => {
             await ProductModel.create(product);
             const products = await ProductModel.find()
             io.emit('realTime', products);
+            io.emit('products', products);
         } catch(err) {
             console.error("Error al agregar el producto", err);
         }
