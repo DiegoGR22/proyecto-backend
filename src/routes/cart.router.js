@@ -97,5 +97,39 @@ router.post('/:cid/products/:pid', async (req, res) => {
     }
 });
 
+router.delete('/:cid/products/:pid', async (req, res) => {
+    const { cid, pid } = req.params
+    try {
+        const cart = await CartModel.findById(cid);
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        const product = await ProductModel.findById(pid);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const initialProductCount = cart.products.length;
+
+        const updatedCart = await CartModel.findOneAndUpdate(
+            {_id: cid},
+            {$pull: {products: { product: pid } } },
+            {new: true}
+        );
+
+        const finalProductCount = updatedCart.products.length;
+
+        if(initialProductCount === finalProductCount) {
+            return res.status(404).json({ message: `Product ${pid} not found in cart`, payload: updatedCart });
+        } else {
+            return res.status(200).json({ message: "Product removed from cart", payload: updatedCart });
+        }
+        
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting product from cart" })
+    }
+})
+
 
 export default router
