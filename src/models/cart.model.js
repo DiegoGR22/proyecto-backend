@@ -1,14 +1,15 @@
 import { Schema, model } from 'mongoose'
 
 const ProductSchema = new Schema({
-    id: Number,
-    title: String,
-    price: Number,
+    product: {
+        type: Schema.Types.ObjectId,
+        ref: 'products',  // Referencia al modelo de productos
+    },
     quantity: {
         type: Number,
         default: 1,
-    }
-})
+    },
+},{_id: false})
 
 const CartSchema = new Schema({
     products: {
