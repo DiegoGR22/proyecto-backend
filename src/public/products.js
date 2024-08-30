@@ -33,7 +33,8 @@ socket.on('products', (products) => {
         const btnAdd = document.createElement('button');
         btnAdd.innerHTML = 'Add';
         btnAdd.classList.add("btn-add")
-        btnAdd.onclick = () => addProductToCart(product.id);
+        const pid = product._id.toString();
+        btnAdd.onclick = () => addProductToCart("66cfa4f8954d4123e544b481", pid);
 
         div.appendChild(li);
         li.appendChild(title);
@@ -47,7 +48,7 @@ socket.on('products', (products) => {
     });
 });
 
-// function addProductToCart(carritoId, productId) {
-//     socket.emit('addProductToCart', carritoId, productId);
-//     console.log("Producto agregado: " + productId + "al carrito: " + carritoId);
-// }
+function addProductToCart(cartId, productId) {
+    socket.emit('addProductToCart', {cartId, productId});
+    console.log(`Producto agregado: ${productId} al carrito: ${cartId}`);
+}

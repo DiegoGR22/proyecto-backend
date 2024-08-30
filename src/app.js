@@ -8,6 +8,7 @@ import { Server } from 'socket.io'
 import mongoose from 'mongoose';
 import 'dotenv/config';
 import { ProductModel } from './models/product.model.js';
+import { CartModel } from './models/cart.model.js';
 
 const app = express();
 const PORT = 8080 || 3000;
@@ -76,14 +77,60 @@ io.on('connection', async (socket) => {
         }
     })
 
-    // socket.on('addProductToCart', async (cartId ,productId) => {
-        
-    //     try {
-    //         await cartManager.addProductOnCart(cartId, productId);
-    //         const products = await productManager.getProductList();
-    //         io.emit('products', products);
-    //     } catch(err) {
-    //         console.error("Error al agregar el producto al carrito", err);
-    //     }
-    // })
+    socket.on('addProductToCart', async ({cartId, productId}) => {
+        // console.log(cartId)
+        // console.log(productId)
+        try {
+            const product = await ProductModel.findById(productId).lean();
+            // console.log("🚀 ~ socket.on ~ product:", product)
+    
+            if (!product) {
+                return console.error('Product not found');
+            } 
+    
+            const cart = await CartModel.findById(cartId);
+            // console.log("🚀 ~ socket.on ~ cart:", cart)
+    
+            if (!cart) {
+                return console.error('Cart not found');
+            }
+    
+            // Asegúrate de que products es un arreglo
+            const products = Array.isArray(cart.products) ? cart.products : [];
+    
+            // Filtra valores null y NaN del arreglo
+            const validProducts = products.filter(p => p && typeof p === 'object');
+            // console.log("🚀 ~ router.post ~ validProducts:", validProducts);
+    
+            // Verifica si hay productos válidos
+            if (validProducts.length > 0) {
+                console.log("Products found");
+                const existingProductOnCart = validProducts.findIndex(prod => prod._id.toString() === productId)
+                    // console.log("🚀 ~ router.post ~ existingProductOnCart:", existingProductOnCart)
+    
+                if (existingProductOnCart !== -1) {
+                    const updatedProduct = validProducts.map((prod, index) => {
+                        if( index === existingProductOnCart ) {
+                            return { ...prod, quantity: prod.quantity += 1}
+                        }
+                        return prod
+                    })
+                    
+                    const cartUpdate = await CartModel.findByIdAndUpdate(cartId, { products: updatedProduct }, { new: true });
+                    return console.log("Quantity updated successfully")
+                } else {
+                    const cartUpdate = await CartModel.findByIdAndUpdate(cartId,{ $push: { products: product } }, { new: true });
+                    return console.log('Product added to cart')
+                }
+    
+            } else {
+                console.log("No products found");
+                const cartUpdate = await CartModel.findByIdAndUpdate(cartId, { products: product }, { new: true });
+                return console.log('Product added to cart')
+            }
+    
+        } catch (error) {
+            console.error('Error adding product to cart');
+        }
+    })
 })

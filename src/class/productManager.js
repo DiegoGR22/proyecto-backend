@@ -25,7 +25,7 @@ class ProductManager {
         ]);
     
         const products = await ProductModel.aggregatePaginate(prodAggreg, options);
-        console.log("🚀 ~ ProductManager ~ getProducts ~ products:", products)
+        // console.log("🚀 ~ ProductManager ~ getProducts ~ products:", products)
 
         // return ProductModel.aggregatePaginate(prodAggreg, options);
         return products;
