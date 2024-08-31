@@ -11,14 +11,14 @@ socket.on('connect', () => {
         status: urlParams.get('status') || "",
         sort: urlParams.get('sort') || "desc",
     }
-    console.log("🚀 ~ socket.on ~ params Products:", params)
+    // console.log("🚀 ~ socket.on ~ params Products:", params)
 
     socket.emit('requestProducts', params)
 })
 
-socket.on('products', ({ products }) => {
-    console.log("🚀 ~ socket.on ~ received products Products:", products)
+socket.on('products', ({ products, page, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, limit, params }) => {
     updateProductContainer(products)
+    controlPaginate(page, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, limit, params)
 });
 
 function updateProductContainer(products) {
@@ -64,6 +64,74 @@ function updateProductContainer(products) {
         productContainer.appendChild(div);
     })
 };
+
+function controlPaginate(page, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage, limit, params) {
+    const productControllers = document.getElementById('p-controllers');
+    productControllers.innerHTML = '';
+
+    const nav = document.createElement('nav');
+    nav.classList.add('navigation')
+
+    const ul = document.createElement('ul');
+    ul.classList.add('pagination');
+
+    const liPrev = document.createElement('li');
+    liPrev.classList.add('page-item');
+    
+    const aPrev = document.createElement('a');
+    aPrev.classList.add('page-link');
+    aPrev.innerText = "Previous"
+    aPrev.href = `/products?page=${prevPage}&limit=${limit}&cat=${params.cat}&status=${params.status}&sort=${params.sort}`;
+
+    const liNext = document.createElement('li');
+    liNext.classList.add('page-item');
+
+    const aNext = document.createElement('a');
+    aNext.classList.add('page-link');
+    aNext.innerText = "Next"
+    aNext.href = `/products?page=${nextPage}&limit=${limit}&cat=${params.cat}&status=${params.status}&sort=${params.sort}`
+
+    if(!hasPrevPage){
+        aPrev.classList.add('disabled');
+    }
+
+    if(!hasNextPage){
+        aNext.classList.add('disabled');
+    }
+
+    const li1 = document.createElement('li');
+    liPrev.classList.add('page-item');
+
+    const a1 = document.createElement('a');
+    a1.classList.add('page-link', 'disabled');
+    a1.innerText = page
+    a1.href = "#"
+
+    const ulReset = document.createElement('ul');
+    ulReset.classList.add('pagination', 'navigation');
+    const divReset = document.createElement('div');
+    const liReset = document.createElement('li');
+    liReset.classList.add('page-item');
+    const aReset = document.createElement('a');
+    aReset.classList.add('page-link');
+    aReset.innerText = "Reset filters"
+    aReset.href = `/products`
+
+
+    nav.appendChild(ul);
+    ul.append(liPrev, li1, liNext);
+    liPrev.appendChild(aPrev);
+    liNext.appendChild(aNext);
+    li1.appendChild(a1);
+
+    ulReset.appendChild(divReset);
+    divReset.appendChild(liReset);
+    liReset.appendChild(aReset);
+
+    productControllers.appendChild(nav);
+    productControllers.appendChild(ulReset);
+
+}
 
 function addProductToCart(cartId, productId) {
     socket.emit('addProductToCart', { cartId, productId });

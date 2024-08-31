@@ -44,7 +44,7 @@ io.on('connection', async (socket) => {
 
     socket.on('requestProducts', async (params) => {
         try {
-            console.log("🚀 ~ socket.on ~ params:", params)
+            // console.log("🚀 ~ socket.on ~ params:", params)
             const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = params;
             const products = await productManager.getProducts({ page, limit, cat, status, sort });
 
@@ -53,12 +53,14 @@ io.on('connection', async (socket) => {
                 page: products.page,
                 totalPages: products.totalPages,
                 limit: products.limit,
+                hasPrevPage: products.hasPrevPage,
+                hasNextPage: products.hasNextPage,
+                prevPage: products.prevPage,
+                nextPage: products.nextPage,
+                params
             })
             socket.emit('realTime', {
-                products: products.docs,
-                page: products.page,
-                totalPages: products.totalPages,
-                limit: products.limit,
+                products: products.docs
             })
 
         } catch (error) {
