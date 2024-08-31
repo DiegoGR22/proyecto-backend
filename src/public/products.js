@@ -2,19 +2,36 @@ const socket = io();
 
 socket.on('connect', () => {
     console.log("Connected on Products", socket.id)
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {
+        page: urlParams.get('page') || 1,
+        limit: urlParams.get('limit') || 10,
+        cat: urlParams.get('cat') || "",
+        status: urlParams.get('status') || "",
+        sort: urlParams.get('sort') || "desc",
+    }
+    console.log("🚀 ~ socket.on ~ params Products:", params)
+
+    socket.emit('requestProducts', params)
 })
 
-socket.on('products', (products) => {
+socket.on('products', ({ products }) => {
+    console.log("🚀 ~ socket.on ~ received products Products:", products)
+    updateProductContainer(products)
+});
+
+function updateProductContainer(products) {
     const productContainer = document.getElementById('p-container');
     productContainer.innerHTML = '';
 
     products.forEach(product => {
-        
+
         const div = document.createElement('div');
         div.classList.add('product-div');
 
         const li = document.createElement('li');
-        
+
         const title = document.createElement('h2');
         title.innerHTML = product.title;
 
@@ -45,10 +62,10 @@ socket.on('products', (products) => {
         li.appendChild(btnAdd);
 
         productContainer.appendChild(div);
-    });
-});
+    })
+};
 
 function addProductToCart(cartId, productId) {
-    socket.emit('addProductToCart', {cartId, productId});
+    socket.emit('addProductToCart', { cartId, productId });
     console.log(`Producto agregado: ${productId} al carrito: ${cartId}`);
 }

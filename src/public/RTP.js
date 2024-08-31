@@ -2,50 +2,76 @@ const socket = io();
 
 socket.on('connect', () => {
     console.log("Connected on RTP", socket.id)
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {
+        page: urlParams.get('page') || 1,
+        limit: urlParams.get('limit') || 1000,
+        cat: urlParams.get('cat') || "",
+        status: urlParams.get('status') || "",
+        sort: urlParams.get('sort') || "desc",
+    }
+    console.log("🚀 ~ socket.on ~ params RTP:", params)
+
+    socket.emit('requestProducts', params)
 })
 
-socket.on('realTime', (products) => {
+socket.on('realTime', (data) => {
+    console.log("🚀 ~ socket.on ~ Received data for RTP:", data);
+    if (data && data.products && Array.isArray(data.products)) {
+        updateProductContainer(data.products);
+    } else {
+        console.error("Data received for RTP is not in the expected format:", data);
+    }
+});
+
+function updateProductContainer(products) {
+    console.log("🚀 ~ updateProductContainer ~ products:", products)
     const productList = document.getElementById('product-list');
     productList.innerHTML = '';
 
-    products.forEach(product => {
+    if (Array.isArray(products)) {
+        products.forEach(product => {
 
-        const div = document.createElement('div');
-        div.classList.add('product-div');
+            const div = document.createElement('div');
+            div.classList.add('product-div');
 
-        const li = document.createElement('li');
-        
-        const title = document.createElement('h2');
-        title.innerHTML = product.title;
+            const li = document.createElement('li');
 
-        const description = document.createElement('p');
-        description.innerHTML = product.description;
+            const title = document.createElement('h2');
+            title.innerHTML = product.title;
 
-        const price = document.createElement('p');
-        price.innerHTML = `Precio: ${product.price}`;
+            const description = document.createElement('p');
+            description.innerHTML = product.description;
 
-        const stock = document.createElement('p');
-        stock.innerHTML = `Stock: ${product.stock}`;
+            const price = document.createElement('p');
+            price.innerHTML = `Precio: ${product.price}`;
 
-        const category = document.createElement('p');
-        category.innerHTML = `Categoría: ${product.category}`;
+            const stock = document.createElement('p');
+            stock.innerHTML = `Stock: ${product.stock}`;
 
-        const btnDelete = document.createElement('button');
-        btnDelete.innerHTML = 'Eliminar';
-        btnDelete.classList.add("btn-delete")
-        btnDelete.onclick = () => deleteProduct(product._id);
+            const category = document.createElement('p');
+            category.innerHTML = `Categoría: ${product.category}`;
 
-        div.appendChild(li);
-        li.appendChild(title);
-        li.appendChild(description);
-        li.appendChild(price);
-        li.appendChild(stock);
-        li.appendChild(category);
-        li.appendChild(btnDelete);
+            const btnDelete = document.createElement('button');
+            btnDelete.innerHTML = 'Eliminar';
+            btnDelete.classList.add("btn-delete")
+            btnDelete.onclick = () => deleteProduct(product._id);
 
-        productList.appendChild(div);
-    });
-})
+            div.appendChild(li);
+            li.appendChild(title);
+            li.appendChild(description);
+            li.appendChild(price);
+            li.appendChild(stock);
+            li.appendChild(category);
+            li.appendChild(btnDelete);
+
+            productList.appendChild(div);
+        });
+    } else {
+        console.error("The products parameter is not an array or is undefined");
+    }
+}
 
 document.getElementById('addButton').addEventListener('click', (event) => {
     event.preventDefault();

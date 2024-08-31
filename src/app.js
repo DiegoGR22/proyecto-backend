@@ -1,7 +1,7 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
-import ProductRouter from './routes/product.router.js';
+import ProductRouter, { productManager } from './routes/product.router.js';
 import CartRouter from './routes/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
@@ -42,20 +42,36 @@ const io = new Server(httpServer);
 io.on('connection', async (socket) => {
     console.log("New connection established", socket.id)
 
-    try{
-        const products = await ProductModel.find()
-        socket.emit('products', products);
-        socket.emit('realTime', products);
-    } catch(err) {
-        console.error("Error para obtener la productList", err);
-    }
+    socket.on('requestProducts', async (params) => {
+        try {
+            console.log("🚀 ~ socket.on ~ params:", params)
+            const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = params;
+            const products = await productManager.getProducts({ page, limit, cat, status, sort });
+
+            socket.emit('products', {
+                products: products.docs,
+                page: products.page,
+                totalPages: products.totalPages,
+                limit: products.limit,
+            })
+            socket.emit('realTime', {
+                products: products.docs,
+                page: products.page,
+                totalPages: products.totalPages,
+                limit: products.limit,
+            })
+
+        } catch (error) {
+            console.error("Error para obtener los productos paginados", error);
+        }
+    })
 
     socket.on('newProduct', async (product) => {
         try {
             await ProductModel.create(product);
             const products = await ProductModel.find()
-            io.emit('realTime', products);
-            io.emit('products', products);
+            io.emit('realTime', {products: products});
+            io.emit('products', {products: products});
         } catch(err) {
             console.error("Error al agregar el producto", err);
         }
@@ -71,7 +87,8 @@ io.on('connection', async (socket) => {
         try {
             await ProductModel.findByIdAndDelete(productId);
             const products = await ProductModel.find().lean();
-            io.emit('realTime', products);
+            io.emit('realTime', {products: products});
+            io.emit('products', {products: products});
         } catch(err) {
             console.error("Error al eliminar el producto", err);
         }
