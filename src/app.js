@@ -88,6 +88,17 @@ io.on('connection', async (socket) => {
         
         try {
             await ProductModel.findByIdAndDelete(productId);
+            // Obtener todos los carritos que contienen el producto
+            const carts = await CartModel.find({ 'products.product': productId });
+
+            // Actualizar cada carrito para eliminar el producto
+            for (const cart of carts) {
+                await CartModel.findByIdAndUpdate(
+                    cart._id,
+                    { $pull: { products: { product: productId } } }
+                );
+            }
+
             const products = await ProductModel.find().lean();
             io.emit('realTime', {products: products});
             io.emit('products', {products: products});
