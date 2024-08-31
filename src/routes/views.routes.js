@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { productManager } from '../routes/product.router.js';
 import { __dirname } from '../utils.js';
 import { ProductModel } from '../models/product.model.js';
+import { CartModel } from '../models/cart.model.js';
 
 const router = Router();
 
@@ -36,7 +37,22 @@ router.get('/realtimeproducts', (req, res) => {
 })
 
 router.get('/carts/:cid', async (req, res) => {
-    res.render('carts');
+    const { cid } = req.params;
+    
+    try {
+        // Busca el carrito por ID
+        const cart = await CartModel.findById(cid).populate('products.product').lean();
+        // console.log("🚀 ~ router.get ~ cart:", cart)
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        // Renderiza la vista de carritos pasando los datos del carrito
+        res.render('carts', { cart }); // Asegúrate de tener una vista llamada 'cart.handlebars'
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving cart' });
+    }
 })
 
 export default router;
