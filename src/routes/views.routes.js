@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { productManager } from '../routes/product.router.js';
+import { productManager } from './api/product.router.js';
 import { __dirname } from '../utils.js';
 import { ProductModel } from '../models/product.model.js';
 import { CartModel } from '../models/cart.model.js';

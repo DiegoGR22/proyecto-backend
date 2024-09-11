@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { __dirname } from '../utils.js';
-import { CartModel } from "../models/cart.model.js";
-import { ProductModel } from "../models/product.model.js";
+import { __dirname } from '../../utils.js';
+import { CartModel } from "../../models/cart.model.js";
+import { ProductModel } from "../../models/product.model.js";
 
 const router = Router();
 

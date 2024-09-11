@@ -1,18 +1,21 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
-import ProductRouter, { productManager } from './routes/product.router.js';
-import CartRouter from './routes/cart.router.js';
+import ProductRouter, { productManager } from './routes/api/product.router.js';
+import CartRouter from './routes/api/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 import 'dotenv/config';
 import { ProductModel } from './models/product.model.js';
 import { CartModel } from './models/cart.model.js';
+import cookieParser from 'cookie-parser';
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 
 const app = express();
-const PORT = 8080 || 3000;
-const uri = process.env.MONGODB_URI;
+const PORT = process.env.PORT1 || 3000;
+const mongoUri = process.env.MONGODB_URI;
 
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
@@ -22,16 +25,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname + '/public'));
+
+app.use(cookieParser());
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: mongoUri,
+        // ttl: 15
+    }),
+    secret: 'abc123',
+    resave: false,
+    saveUninitialized: false
+}));
+
 app.use('/', ViewsRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/carts', CartRouter);
-
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Server listening on PORT ${PORT}`);
 });
 
-mongoose.connect(uri, {
+mongoose.connect(mongoUri, {
     dbName: 'proy-back'
 }) .then(() => {
     console.log("Database connected successfully")
