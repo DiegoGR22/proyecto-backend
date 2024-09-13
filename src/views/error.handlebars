@@ -1,4 +1,13 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    alert("{{message}}");
-    window.location.href = '/'; // Redirige al usuario a la página de inicio
+    Swal.fire({
+        title: "ERROR",
+        text: "{{message}}",
+        icon: "error",
+        confirmButtonText: "OK"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/';
+        }
+    });
 </script>
