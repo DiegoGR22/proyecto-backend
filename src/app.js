@@ -12,6 +12,7 @@ import { CartModel } from './models/cart.model.js';
 import cookieParser from 'cookie-parser';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import SessionRouter from './routes/api/session.routes.js'
 
 const app = express();
 const PORT = process.env.PORT1 || 3000;
@@ -40,6 +41,7 @@ app.use(session({
 app.use('/', ViewsRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/carts', CartRouter);
+app.use('/api/session', SessionRouter);
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Server listening on PORT ${PORT}`);

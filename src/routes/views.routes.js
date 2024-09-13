@@ -3,11 +3,19 @@ import { productManager } from './api/product.router.js';
 import { __dirname } from '../utils.js';
 import { ProductModel } from '../models/product.model.js';
 import { CartModel } from '../models/cart.model.js';
+import { isNotAuth, isAuth, isAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
 router.get('/', async (req, res) => {
-    res.render('home');
+    try {
+        res.render('home', {
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error("Can not render home page", error);
+        res.status(500).json({ message: "Can not render home page", details: error.message })
+    }
 })
 
 router.get('/products', async (req, res) => {
@@ -32,7 +40,7 @@ router.get('/products', async (req, res) => {
 
 })
 
-router.get('/realtimeproducts', (req, res) => {
+router.get('/realtimeproducts', isAdmin, (req, res) => {
     res.render('realtimeproducts');
 })
 
@@ -54,5 +62,36 @@ router.get('/carts/:cid', async (req, res) => {
         res.status(500).json({ message: 'Error retrieving cart' });
     }
 })
+
+router.get('/register', isNotAuth, (req, res) => {
+    try {
+        res.render('register');
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/login', isNotAuth, (req, res) => {
+    try {
+        res.render('login');
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/profile', isAuth, (req, res) => {
+    try {
+        res.render('profile',{
+            user: req.session.user
+        });
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.get('/error', (req, res) => {
+    const message = req.query.message || 'An error occurred';
+    res.render('error', { message });
+});
 
 export default router;

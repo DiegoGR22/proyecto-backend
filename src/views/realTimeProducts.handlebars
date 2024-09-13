@@ -1,6 +1,18 @@
 <h1>Real Time Products</h1>
-<a href="/"><button class="btn1">Home</button></a>
-<a href="/products"><button class="btn1">Lista de productos</button></a>
+<div class="d-flex justify-content-between w-100">
+    <div class="d-flex">
+        <a href="/"><button class="btn btn-success my-2 mx-1">Home</button></a>
+        <a href="/products"><button class="btn btn-success my-2 mx-1">Lista de productos</button></a>
+    </div>
+
+    <div class="d-flex">
+        <a id="btnBack"><button class="btn btn-secondary mx-1">Go Back</button></a>
+        <form action="/api/session/logout" method="POST">
+            <button type="submit" class="btn btn-danger mx-1">Log Out</button>
+        </form>
+    </div>
+</div>
+
 
 <div class="add-form">
     <h2>Añadir Producto</h2>

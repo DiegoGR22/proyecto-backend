@@ -1,114 +1,140 @@
-<a href="/products"><button class="btn1">Lista de productos</button></a>
-<a href="/realtimeproducts"><button class="btn1">Editar Producto</button></a>
-
 <h1>Cart {{cart._id}}</h1>
-    {{#each cart.products}}
-        <div class="product-div">
-            <li>
-                <h2>Product ID:</h2><b>{{this.product._id}}</b>
-                <hr>
-                <h5>Title: {{this.product.title}}</h5> 
-                <p>Price: {{this.product.price}}</p> 
-                <p>Quantity: {{this.quantity}}</p> 
-            </li>
-        </div>
-    {{/each}}
+
+<div class="d-flex justify-content-between w-100">
+    <div class="d-flex">
+        <a href="/"><button class="btn btn-success my-2 mx-1">Home</button></a>
+        <a href="/products"><button class="btn btn-success my-2 mx-1">Lista de productos</button></a>
+    </div>
+
+    <div class="d-flex">
+        <a id="btnBack"><button class="btn btn-secondary mx-1">Go Back</button></a>
+        <form action="/api/session/logout" method="POST">
+            <button type="submit" class="btn btn-danger mx-1">Log Out</button>
+        </form>
+    </div>
+</div>
+
+{{#each cart.products}}
+<div class="product-div">
+    <li>
+        <h2>Product ID:</h2><b>{{this.product._id}}</b>
+        <hr>
+        <h5>Title: {{this.product.title}}</h5>
+        <p>Price: {{this.product.price}}</p>
+        <p>Quantity: {{this.quantity}}</p>
+    </li>
+</div>
+{{/each}}
 
 
-{{!-- TODO: NO SIRVE EL CSS ... CREO POR LA RUTA ABSOLUTA ... ALGO TIENE QUE VER QUE ESTE USA OTRO PARAM ADEMAS DE /CARTS ... ??--}}
-    <style>
-        *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+{{!-- TODO: NO SIRVE EL CSS ... CREO POR LA RUTA ABSOLUTA ... ALGO TIENE QUE VER QUE ESTE USA OTRO PARAM ADEMAS DE
+/CARTS ... ??--}}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-.product-div{ 
-    border: 1px black solid;
-    width: 400px;
-    display: inline-block;
-    padding: 20px;
-    margin: 0px 0px 10px 10px;
-}
+    .product-div {
+        border: 1px black solid;
+        width: 400px;
+        display: inline-block;
+        padding: 20px;
+        margin: 0px 0px 10px 10px;
+    }
 
-li {
-    list-style: none;
-}
+    li {
+        list-style: none;
+    }
 
-h1 {
-    margin: 10px 10px;
-}
+    h1 {
+        margin: 10px 10px;
+    }
 
-p {
-    margin: 0;
-}
+    p {
+        margin: 0;
+    }
 
-.add-form{
-    display: block;
-    width: 300px;
-    margin: 0px 0px 10px 10px;
-}
+    .add-form {
+        display: block;
+        width: 300px;
+        margin: 0px 0px 10px 10px;
+    }
 
-.btn-delete{
-    color: #fff;
-    background-color: crimson;
-    font-size: medium;
-    border: none;
-    border-radius: 5px;
-    padding: 8px;
-    margin-top: 10px;
-    cursor: pointer;
-}
+    .btn-delete {
+        color: #fff;
+        background-color: crimson;
+        font-size: medium;
+        border: none;
+        border-radius: 5px;
+        padding: 8px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
 
-.btn-add{
-    /* color: #fff; */
-    background-color: orange;
-    font-size: medium;
-    border: none;
-    border-radius: 5px;
-    padding: 8px;
-    margin-top: 10px;
-    cursor: pointer;
-}
+    .btn-add {
+        /* color: #fff; */
+        background-color: orange;
+        font-size: medium;
+        border: none;
+        border-radius: 5px;
+        padding: 8px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
 
-.btn-add:hover{
-    background-color: green;
-    color: #fff;
-    scale: 1.15;
-    transition: all .2s ease;
-}
+    .btn-add:hover {
+        background-color: green;
+        color: #fff;
+        scale: 1.15;
+        transition: all .2s ease;
+    }
 
-#addButton{
-    color: #fff;
-    background-color: forestgreen;
-    font-size: medium;
-    border: none;
-    border-radius: 5px;
-    padding: 8px;
-    margin-top: 10px;
-    cursor: pointer;
-}
+    #addButton {
+        color: #fff;
+        background-color: forestgreen;
+        font-size: medium;
+        border: none;
+        border-radius: 5px;
+        padding: 8px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
 
-.btn1 {
-    background-color: #4CAF50; /* Color de fondo verde */
-    border: none; /* Sin borde */
-    color: white; /* Texto en color blanco */
-    padding: 10px 20px; /* Espaciado interno */
-    text-align: center; /* Centrar el texto */
-    text-decoration: none; /* Sin subrayado */
-    display: inline-block; /* Mostrar en línea */
-    font-size: 16px; /* Tamaño de fuente */
-    margin: 4px 2px; /* Margen */
-    cursor: pointer; /* Cambiar cursor a mano al pasar por encima */
-    border-radius: 12px; /* Bordes redondeados */
-    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
-}
+    .btn1 {
+        background-color: #4CAF50;
+        /* Color de fondo verde */
+        border: none;
+        /* Sin borde */
+        color: white;
+        /* Texto en color blanco */
+        padding: 10px 20px;
+        /* Espaciado interno */
+        text-align: center;
+        /* Centrar el texto */
+        text-decoration: none;
+        /* Sin subrayado */
+        display: inline-block;
+        /* Mostrar en línea */
+        font-size: 16px;
+        /* Tamaño de fuente */
+        margin: 4px 2px;
+        /* Margen */
+        cursor: pointer;
+        /* Cambiar cursor a mano al pasar por encima */
+        border-radius: 12px;
+        /* Bordes redondeados */
+        transition: background-color 0.3s ease;
+        /* Transición suave del color de fondo */
+    }
 
-.btn1:hover {
-    background-color: #45a049; /* Color de fondo más oscuro al pasar el ratón */
-}
+    .btn1:hover {
+        background-color: #45a049;
+        /* Color de fondo más oscuro al pasar el ratón */
+    }
 
-.navigation{
-    margin: 10px 10px;
-}
-    </style>
+    .navigation {
+        margin: 10px 10px;
+    }
+</style>

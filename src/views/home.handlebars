@@ -1,3 +1,16 @@
-<h1>BIENVENIDOS</h1>
-<a href="/products"><button class="btn1">Lista de productos</button></a>
-<a href="/realtimeproducts"><button class="btn1">Editar Producto</button></a>
+<h1 class="text-uppercase">BIENVENIDO {{user.firstName}}</h1>
+
+<div class="d-flex justify-content-between w-100">
+    <div class="d-flex">
+        <a href="/profile"><button class="btn btn-success my-2 mx-1">Perfil</button></a>
+        <a href="/products"><button class="btn btn-success my-2 mx-1">Lista de productos</button></a>
+        <a href="/realtimeproducts"><button class="btn btn-success my-2 mx-1">Editar Producto</button></a>
+    </div>
+
+    <div class="d-flex">
+        <a id="btnBack"><button class="btn btn-secondary mx-1">Go Back</button></a>
+        <form action="/api/session/logout" method="POST">
+            <button type="submit" class="btn btn-danger mx-1">Log Out</button>
+        </form>
+    </div>
+</div>
