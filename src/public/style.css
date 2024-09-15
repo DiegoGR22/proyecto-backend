@@ -119,3 +119,33 @@ p {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+/* Estilo para el botón de GitHub */
+.github-btn {
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 15px;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.github-btn svg {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.github-btn:hover {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+.github-btn:focus {
+    outline: #e5dbdb 5px solid;
+}
