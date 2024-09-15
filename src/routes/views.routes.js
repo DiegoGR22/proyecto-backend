@@ -4,6 +4,7 @@ import { __dirname } from '../utils.js';
 import { ProductModel } from '../models/product.model.js';
 import { CartModel } from '../models/cart.model.js';
 import { isNotAuth, isAuth, isAdmin } from '../middleware/auth.js';
+import { authToken } from '../utils.js';
 
 const router = Router();
 
@@ -100,6 +101,12 @@ router.get('/restore-password', (req, res) => {
     } catch (error) {
         console.log(error);
     }
+})
+
+router.get('/current', authToken, (req, res) => {
+    res.render('current', {
+        user: req.session.user,
+    });
 })
 
 export default router;

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserModel } from "../../models/user.model.js";
-import { createHash, validatePassword } from "../../utils.js";
+import { createHash, generateToken, validatePassword } from "../../utils.js";
 import { validate } from "uuid";
 import passport from "passport";
 
@@ -31,6 +31,8 @@ router.get('/failRegister', (req, res) => {
 
 router.post('/login', passport.authenticate('login', {failureRedirect: 'failLogin'}),  async (req, res) => {
 
+    const token = generateToken(req.user)
+
     req.session.user = {
         id: req.user._id,
         firstName: req.user.firstName,
@@ -40,6 +42,11 @@ router.post('/login', passport.authenticate('login', {failureRedirect: 'failLogi
         role: req.user.role,
     };
     // console.log("🚀 ~ router.post ~ req.session.user:", req.session.user)
+
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        maxAge: 60 * 1000
+    })
 
     res.redirect("/");
 });
