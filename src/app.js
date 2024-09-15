@@ -13,6 +13,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import SessionRouter from './routes/api/session.routes.js'
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 
 const app = express();
 const PORT = process.env.PORT1 || 3000;
@@ -37,6 +39,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', ViewsRouter);
 app.use('/api/products', ProductRouter);

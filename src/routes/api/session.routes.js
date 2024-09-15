@@ -2,6 +2,7 @@ import { Router } from "express";
 import { UserModel } from "../../models/user.model.js";
 import { createHash, validatePassword } from "../../utils.js";
 import { validate } from "uuid";
+import passport from "passport";
 
 const router = Router();
 
@@ -19,54 +20,34 @@ router.get('/', (req, res) => {
     }
 });
 
-router.post('/register', async (req, res) => {
-    const { firstName, lastName, age, email, password } = req.body;
-    try {
-
-        const user = new UserModel({ firstName, lastName, age, email, password: createHash(password) });
-        // console.log("🚀 ~ router.post ~ user:", user)
-        await user.save();
-
+router.post('/register',passport.authenticate('register', {failureRedirect: 'failRegister'}), async (req, res) => {
         res.redirect('/login');
-    } catch (error) {
-        console.error("Register failed", error);
-        res.status(500).json({ error: "Register failed", details: error.message });
-    }
 })
 
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    
-    try {
-        const user = await UserModel.findOne({ email });
-        // console.log("🚀 ~ router.post ~ user:", user)
+router.get('/failRegister', (req, res) => {
+    console.error("Something went wrong")
+    res.status(400).send({ message: 'Something went wrong' });
+})
 
-        if (!user) {
-            console.error("User not found");
-            return res.status(404).send({ error: "User not found" });
-        }
+router.post('/login', passport.authenticate('login', {failureRedirect: 'failLogin'}),  async (req, res) => {
 
-        if (validatePassword(user, password)) {
-            req.session.user = {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                age: user.age,
-                role: user.role
-            };
-            // console.log("🚀 ~ router.post ~ req.session.user:", req.session.user)
+    req.session.user = {
+        id: req.user._id,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        email: req.user.email,
+        age: req.user.age,
+        role: req.user.role,
+    };
+    // console.log("🚀 ~ router.post ~ req.session.user:", req.session.user)
 
-            res.redirect('/');
-        } else {
-            console.error("Invalid password");
-            return res.status(401).send({ error: "Invalid password" });
-        }
-    } catch (error) {
-        console.error("Login failed", error);
-        res.status(500).send({ error: "Login failed", details: error.message });
-    }
+    res.redirect("/");
 });
+
+router.get('/failLogin', (req, res) => {
+    console.error("Something went wrong")
+    res.status(400).send({ message: 'Something went wrong' });
+})
 
 router.post('/logout', (req, res) => {
     try {
