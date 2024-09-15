@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { UserModel } from "../../models/user.model.js";
+import { createHash, validatePassword } from "../../utils.js";
+import { validate } from "uuid";
 
 const router = Router();
 
@@ -21,7 +23,7 @@ router.post('/register', async (req, res) => {
     const { firstName, lastName, age, email, password } = req.body;
     try {
 
-        const user = new UserModel({ firstName, lastName, age, email, password });
+        const user = new UserModel({ firstName, lastName, age, email, password: createHash(password) });
         // console.log("🚀 ~ router.post ~ user:", user)
         await user.save();
 
@@ -44,7 +46,7 @@ router.post('/login', async (req, res) => {
             return res.status(404).send({ error: "User not found" });
         }
 
-        if (user.password === password) {
+        if (validatePassword(user, password)) {
             req.session.user = {
                 id: user._id,
                 firstName: user.firstName,
@@ -104,5 +106,28 @@ router.post('/role', async (req, res) => {
         res.status(500).send({ error: "Login failed", details: error.message });
     }
 });
+
+router.post('/restore-password', async (req, res) => {
+    const { email, newPassword } = req.body;
+    
+    try {
+        const user = await UserModel.findOneAndUpdate({ email: email }, { password: createHash(newPassword) });
+        // console.log("🚀 ~ router.post ~ user:", user)
+
+        if (!user) {
+            console.error("User not found");
+            return res.status(404).send({ error: "User not found" });
+        }
+
+        console.log("Password successfully changed")
+        setTimeout(() => {
+            res.redirect('/login')
+        }, 3000);
+
+    } catch (error) {
+        console.error("An error occurred while changing password", error);
+        res.status(500).send({ error: "An error occurred while changing password", details: error.message });
+    }
+})
 
 export default router;

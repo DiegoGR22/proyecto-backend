@@ -94,4 +94,12 @@ router.get('/error', (req, res) => {
     res.render('error', { message });
 });
 
+router.get('/restore-password', (req, res) => {
+    try {
+        res.render('restore-password')
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 export default router;
