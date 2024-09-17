@@ -5,6 +5,7 @@ import fs from "fs";
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt, { genSaltSync } from 'bcrypt';    
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 const __filename = fileURLToPath(import.meta.url); // nos da la ruta desde donde se esta haciendo el import
 
@@ -44,7 +45,7 @@ export const createHash = password => bcrypt.hashSync(password, genSaltSync(10))
 export const validatePassword = (user, password) => bcrypt.compareSync(password, user.password)
 
 //* JWT
-const SECRET_KEY = 'ada123';
+const SECRET_KEY = process.env.SECRET_KEY;
 
 export const generateToken = (user) => {
     const token = jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: '1m' })
