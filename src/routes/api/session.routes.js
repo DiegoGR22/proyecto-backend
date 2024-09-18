@@ -132,12 +132,17 @@ router.get('/github', passport.authenticate('github', {scope: ['user: email']}),
 })
 
 router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
-    req.user = req.user
+    const token = generateToken(req.user)
+
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        maxAge: 60 * 1000
+    })
+
     res.redirect('/')
 })
 
 router.get('/current', passportCall('jwt'), (req, res) => {
-    // res.send(req.user)
     res.redirect('/current')
 })
 
