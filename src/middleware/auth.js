@@ -1,5 +1,5 @@
 export const isAuth = (req, res, next) => {
-    if (!req.session.user) {
+    if (!req.user) {
         console.log('User not logged in, redirecting to login ...');
         return res.redirect('/login'); // Redirige a la página de login si el usuario no está autenticado
     }
@@ -8,7 +8,7 @@ export const isAuth = (req, res, next) => {
 }
 
 export const isNotAuth = (req, res, next) => {
-    if (req.session.user) {
+    if (req.user) {
         console.log('User already logged in, redirecting to home ...');
         return res.redirect('/'); // Redirige a la página de home si el usuario ya está autenticado
     }
@@ -17,7 +17,7 @@ export const isNotAuth = (req, res, next) => {
 }
 
 export const isAdmin = (req, res, next) => {
-    if(req.session.user.role !== 'admin'){
+    if(req.user.role !== 'admin'){
         console.log("You are not allowed to access this")
 
         return res.redirect('/error?message=ERROR 401: You are not allowed to access this');

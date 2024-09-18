@@ -33,14 +33,14 @@ router.post('/login', passport.authenticate('login', {failureRedirect: 'failLogi
 
     const token = generateToken(req.user)
 
-    req.session.user = {
-        id: req.user._id,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        email: req.user.email,
-        age: req.user.age,
-        role: req.user.role,
-    };
+    // req.session.user = {
+    //     id: req.user._id,
+    //     firstName: req.user.firstName,
+    //     lastName: req.user.lastName,
+    //     email: req.user.email,
+    //     age: req.user.age,
+    //     role: req.user.role,
+    // };
     // console.log("🚀 ~ router.post ~ req.session.user:", req.session.user)
 
     res.cookie('authToken', token, {
@@ -63,6 +63,7 @@ router.post('/logout', (req, res) => {
                 res.status(400).json({ error: "Logout failed", details: err.message });
             } else {
                 res.clearCookie("connect.sid");
+                res.clearCookie("authToken");
                 res.redirect('/login');
                 console.log("You have been logged out")
             }
@@ -74,7 +75,7 @@ router.post('/logout', (req, res) => {
 })
 
 router.post('/role', async (req, res) => {
-    const user = req.session.user;
+    const user = req.user;
     const roleModified = user.role === 'admin' ? 'user' : 'admin';
     
     try {
@@ -86,7 +87,15 @@ router.post('/role', async (req, res) => {
         } 
 
         console.log("Role modified to: " + roleModified)
-        req.session.user.role = roleModified
+        req.user.role = roleModified
+
+        const newToken = generateToken(req.user)
+
+        res.cookie('authToken', newToken, {
+            httpOnly: true,
+            maxAge: 60 * 1000
+        })
+
         res.redirect("/profile");
 
     } catch (error) {
@@ -123,7 +132,7 @@ router.get('/github', passport.authenticate('github', {scope: ['user: email']}),
 })
 
 router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
-    req.session.user = req.user
+    req.user = req.user
     res.redirect('/')
 })
 

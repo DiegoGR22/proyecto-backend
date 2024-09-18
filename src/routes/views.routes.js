@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', async (req, res) => {
     try {
         res.render('home', {
-            user: req.session.user
+            user: req.user
         });
     } catch (error) {
         console.error("Can not render home page", error);
@@ -80,10 +80,10 @@ router.get('/login', isNotAuth, (req, res) => {
     }
 })
 
-router.get('/profile', isAuth, (req, res) => {
+router.get('/profile', passportCall('jwt'), (req, res) => {
     try {
         res.render('profile',{
-            user: req.session.user
+            user: req.user
         });
     } catch (error) {
         console.log(error);
