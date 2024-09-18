@@ -21,7 +21,7 @@ export const validatePassword = (user, password) => bcrypt.compareSync(password,
 const SECRET_KEY = process.env.SECRET_KEY;
 
 export const generateToken = (user) => {
-    const token = jwt.sign({ _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, age: user.age, role: user.role  }, SECRET_KEY, { expiresIn: '1m' })
+    const token = jwt.sign({ _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, age: user.age, role: user.role  }, SECRET_KEY, { expiresIn: '24h' })
     return token
 }
 

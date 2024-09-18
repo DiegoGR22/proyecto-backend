@@ -93,7 +93,7 @@ router.post('/role', async (req, res) => {
 
         res.cookie('authToken', newToken, {
             httpOnly: true,
-            maxAge: 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000
         })
 
         res.redirect("/profile");
@@ -136,7 +136,7 @@ router.get('/githubcallback', passport.authenticate('github', {failureRedirect: 
 
     res.cookie('authToken', token, {
         httpOnly: true,
-        maxAge: 60 * 1000
+        maxAge: 24 * 60 * 60 * 1000
     })
 
     res.redirect('/')
