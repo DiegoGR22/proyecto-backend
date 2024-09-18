@@ -20,7 +20,12 @@ const app = express();
 const PORT = process.env.PORT1 || 3000;
 const mongoUri = process.env.MONGODB_URI;
 
-app.engine('handlebars', handlebars.engine());
+app.engine('handlebars', handlebars.engine({
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true
+    }
+}));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 

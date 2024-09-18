@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { productManager } from './api/product.router.js';
-import { __dirname } from '../utils.js';
+import { __dirname, passportCall } from '../utils.js';
 import { ProductModel } from '../models/product.model.js';
 import { CartModel } from '../models/cart.model.js';
 import { isNotAuth, isAuth, isAdmin } from '../middleware/auth.js';
@@ -103,9 +103,9 @@ router.get('/restore-password', (req, res) => {
     }
 })
 
-router.get('/current', authToken, (req, res) => {
+router.get('/current', (req, res) => {
     res.render('current', {
-        user: req.session.user,
+        user: req.user
     });
 })
 

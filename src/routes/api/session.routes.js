@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserModel } from "../../models/user.model.js";
-import { createHash, generateToken, validatePassword } from "../../utils.js";
+import { createHash, generateToken, passportCall, validatePassword } from "../../utils.js";
 import { validate } from "uuid";
 import passport from "passport";
 
@@ -125,6 +125,11 @@ router.get('/github', passport.authenticate('github', {scope: ['user: email']}),
 router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
     req.session.user = req.user
     res.redirect('/')
+})
+
+router.get('/current', passportCall('jwt'), (req, res) => {
+    // res.send(req.user)
+    res.redirect('/current')
 })
 
 export default router;
