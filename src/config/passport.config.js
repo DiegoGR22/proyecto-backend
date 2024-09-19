@@ -86,12 +86,17 @@ const initializePassport = () => {
             let user = await UserModel.findOne({ email: profile._json.email });
 
             if(!user){
+
+            const newCart = new CartModel({ products: [] });
+            await newCart.save();
+
                 let newUser = {
                     firstName: profile._json.name,
                     lastName: "",
                     age: undefined,
                     email: profile._json.email,
                     password: null,
+                    cart: newCart._id
                 }
 
                 let result = await UserModel.create(newUser)
