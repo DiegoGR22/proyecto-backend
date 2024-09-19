@@ -1,5 +1,5 @@
 export const isAuth = (req, res, next) => {
-    if (!req.user) {
+    if (!req.cookies.authToken) {
         console.log('User not logged in, redirecting to login ...');
         return res.redirect('/login'); // Redirige a la página de login si el usuario no está autenticado
     }
@@ -8,7 +8,7 @@ export const isAuth = (req, res, next) => {
 }
 
 export const isNotAuth = (req, res, next) => {
-    if (req.user) {
+    if (req.cookies.authToken) {
         console.log('User already logged in, redirecting to home ...');
         return res.redirect('/'); // Redirige a la página de home si el usuario ya está autenticado
     }
