@@ -26,22 +26,13 @@ router.post('/register',passport.authenticate('register', {failureRedirect: 'fai
 
 router.get('/failRegister', (req, res) => {
     console.error("Something went wrong")
-    res.status(400).send({ message: 'Something went wrong' });
+    // res.status(400).send({ message: 'Something went wrong' });
+    return res.redirect('/error?message=ERROR: Something went wrong');
 })
 
 router.post('/login', passport.authenticate('login', {failureRedirect: 'failLogin'}),  async (req, res) => {
 
     const token = generateToken(req.user)
-
-    // req.session.user = {
-    //     id: req.user._id,
-    //     firstName: req.user.firstName,
-    //     lastName: req.user.lastName,
-    //     email: req.user.email,
-    //     age: req.user.age,
-    //     role: req.user.role,
-    // };
-    // console.log("🚀 ~ router.post ~ req.session.user:", req.session.user)
 
     res.cookie('authToken', token, {
         httpOnly: true,
@@ -53,7 +44,8 @@ router.post('/login', passport.authenticate('login', {failureRedirect: 'failLogi
 
 router.get('/failLogin', (req, res) => {
     console.error("Something went wrong")
-    res.status(400).send({ message: 'Something went wrong' });
+    // res.status(400).send({ message: 'Something went wrong' });
+    return res.redirect('/error?message=ERROR: Email or password are invalid');
 })
 
 router.post('/logout', (req, res) => {
