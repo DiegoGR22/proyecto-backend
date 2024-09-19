@@ -4,6 +4,7 @@ import { UserModel } from "../models/user.model.js";
 import { createHash, validatePassword } from "../utils.js";
 import GitHubStrategy from 'passport-github2'
 import jwt from 'passport-jwt'
+import { CartModel } from "../models/cart.model.js";
 
 const localStrategy = local.Strategy
 
@@ -32,8 +33,11 @@ const initializePassport = () => {
                 console.warn("User already exists")
                 return done(null, false)
             }
+            
+            const newCart = new CartModel({ products: [] });
+            await newCart.save();
 
-            const newUser = { firstName, lastName, email, age, password: createHash(password) }
+            const newUser = { firstName, lastName, email, age, password: createHash(password), cart: newCart._id }
 
             let result = await UserModel.create(newUser)
             return done(null, result);

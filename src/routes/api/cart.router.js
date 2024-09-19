@@ -2,6 +2,7 @@ import { Router } from "express";
 import { __dirname } from '../../utils.js';
 import { CartModel } from "../../models/cart.model.js";
 import { ProductModel } from "../../models/product.model.js";
+import { UserModel } from "../../models/user.model.js";
 
 const router = Router();
 
@@ -14,16 +15,47 @@ router.get('/', async (req, res) => {
     }
 })
 
+// router.post('/', async (req, res) => {
+//     const cart = req.body;
+
+//     try {
+//         const result = await CartModel.create(cart);
+//         res.status(201).json({ message: "Cart created successfully", payload: result })
+//     } catch (error) {
+//         res.status(400).json({ message: "Cart not created" })
+//     }
+// })
+
 router.post('/', async (req, res) => {
-    const cart = req.body;
+    const userId = req.user._id; // Asumiendo que tienes autenticación y el ID del usuario está disponible en req.user
 
     try {
-        const result = await CartModel.create(cart);
-        res.status(201).json({ message: "Cart created successfully", payload: result })
+        // Busca el usuario por su ID
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Verifica si el usuario ya tiene un carrito
+        if (user.cart) {
+            return res.status(200).json({ message: 'Cart already exists', cartId: user.cart });
+        }
+
+        // Si el usuario no tiene un carrito, crea uno nuevo
+        const newCart = new CartModel({ products: [] });
+        await newCart.save();
+
+        // Asigna el ID del nuevo carrito al usuario y guarda el usuario
+        user.cart = newCart._id;
+        await user.save();
+
+        res.status(201).json({ message: 'Cart created', cartId: newCart._id });
     } catch (error) {
-        res.status(400).json({ message: "Cart not created" })
+        console.error(error);
+        res.status(500).json({ message: 'Error creating cart' });
     }
-})
+});
 
 router.get('/:cid', async (req, res) => {
     const { cid } = req.params

@@ -51,7 +51,7 @@ function updateProductContainer(products) {
         btnAdd.innerHTML = 'Add';
         btnAdd.classList.add("btn-add")
         const pid = product._id.toString();
-        btnAdd.onclick = () => addProductToCart("66d13c0ee3e44f70aa5b8e22", pid);
+        btnAdd.onclick = () => addProductToCart(cid, pid);
 
         div.appendChild(li);
         li.appendChild(title);

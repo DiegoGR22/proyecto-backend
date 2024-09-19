@@ -32,7 +32,8 @@ router.get('/products', async (req, res) => {
                 currentPage: result.page,
                 hasPrevPage: result.hasPrevPage,
                 hasNextPage: result.hasNextPage,
-                limit: result.limit
+                limit: result.limit,
+                user: req.user
             })
         
     } catch (error) {

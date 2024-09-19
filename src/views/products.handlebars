@@ -4,7 +4,7 @@
     <div class="d-flex">
         <a href="/"><button class="btn btn-success my-2 mx-1">Home</button></a>
         <a href="/realtimeproducts"><button class="btn btn-success my-2 mx-1">Editar Productos</button></a>
-        <a href="/carts/66d13c0ee3e44f70aa5b8e22"><button class="btn btn-success my-2 mx-1">Carrito</button></a>
+        <a href="/carts/{{user.cart}}"><button class="btn btn-success my-2 mx-1">Carrito</button></a>
     </div>
 
     <div class="d-flex">
@@ -20,3 +20,6 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="./products.js"></script>
+<script>
+    const cid = "{{user.cart}}"
+</script>
