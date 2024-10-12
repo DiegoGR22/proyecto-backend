@@ -1,7 +1,8 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
-import ProductRouter, { productManager } from './routes/api/product.router.js';
+import ProductRouter from './routes/api/product.router.js';
+import { productManager } from './DAO/product.dao.js';
 import CartRouter from './routes/api/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
@@ -12,7 +13,7 @@ import { CartModel } from './models/cart.model.js';
 import cookieParser from 'cookie-parser';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
-import SessionRouter from './routes/api/session.routes.js'
+import UserRouter from './routes/api/user.routes.js'
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 
@@ -52,7 +53,7 @@ app.use(passport.session());
 app.use('/', ViewsRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/carts', CartRouter);
-app.use('/api/session', SessionRouter);
+app.use('/api/session', UserRouter);
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Server listening on PORT ${PORT}`);

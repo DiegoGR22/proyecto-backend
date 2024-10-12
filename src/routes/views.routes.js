@@ -1,113 +1,28 @@
 import { Router } from 'express';
-import { productManager } from './api/product.router.js';
-import { __dirname, passportCall } from '../utils.js';
-import { ProductModel } from '../models/product.model.js';
-import { CartModel } from '../models/cart.model.js';
-import { isNotAuth, isAuth, isAdmin } from '../middleware/auth.js';
-import { authToken } from '../utils.js';
+import { passportCall } from '../utils/passportUtils.js'
+import { isNotAuth, isAdmin } from '../middleware/auth.js';
+import { cart, currentLog, errorPage, home, login, productList, realTimeProductList, register, restorePswd, userProfile } from '../controllers/views.controller.js';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-    try {
-        res.render('home', {
-            user: req.user
-        });
-    } catch (error) {
-        console.error("Can not render home page", error);
-        res.status(500).json({ message: "Can not render home page", details: error.message })
-    }
-})
+router.get('/', home)
 
-router.get('/products', async (req, res) => {
+router.get('/products', productList)
 
-    const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = req.query;
+router.get('/realtimeproducts', isAdmin, realTimeProductList)
 
-    try {
-        const result = await productManager.getProducts({ page, limit, cat, status, sort });
+router.get('/carts/:cid', cart)
 
-            res.render('products', {
-                products: result.docs,
-                totalPages: result.totalPages,
-                currentPage: result.page,
-                hasPrevPage: result.hasPrevPage,
-                hasNextPage: result.hasNextPage,
-                limit: result.limit,
-                user: req.user
-            })
-        
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching products "})
-    }
+router.get('/register', isNotAuth, register)
 
-})
+router.get('/login', isNotAuth, login)
 
-router.get('/realtimeproducts', isAdmin, (req, res) => {
-    res.render('realtimeproducts');
-})
+router.get('/profile', passportCall('jwt'), userProfile)
 
-router.get('/carts/:cid', async (req, res) => {
-    const { cid } = req.params;
-    
-    try {
-        // Busca el carrito por ID
-        const cart = await CartModel.findById(cid).populate('products.product').lean();
-        // console.log("🚀 ~ router.get ~ cart:", cart)
+router.get('/error', errorPage);
 
-        if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' });
-        }
+router.get('/restore-password', restorePswd)
 
-        // Renderiza la vista de carritos pasando los datos del carrito
-        res.render('carts', { cart }); // Asegúrate de tener una vista llamada 'cart.handlebars'
-    } catch (error) {
-        res.status(500).json({ message: 'Error retrieving cart' });
-    }
-})
-
-router.get('/register', isNotAuth, (req, res) => {
-    try {
-        res.render('register');
-    } catch (error) {
-        console.log(error);
-    }
-})
-
-router.get('/login', isNotAuth, (req, res) => {
-    try {
-        res.render('login');
-    } catch (error) {
-        console.log(error);
-    }
-})
-
-router.get('/profile', passportCall('jwt'), (req, res) => {
-    try {
-        res.render('profile',{
-            user: req.user
-        });
-    } catch (error) {
-        console.log(error);
-    }
-})
-
-router.get('/error', (req, res) => {
-    const message = req.query.message || 'An error occurred';
-    res.render('error', { message });
-});
-
-router.get('/restore-password', (req, res) => {
-    try {
-        res.render('restore-password')
-    } catch (error) {
-        console.log(error);
-    }
-})
-
-router.get('/current', (req, res) => {
-    res.render('current', {
-        user: req.user
-    });
-})
+router.get('/current', currentLog)
 
 export default router;
