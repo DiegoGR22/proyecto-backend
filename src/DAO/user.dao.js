@@ -1,13 +1,30 @@
 import { UserModel } from "../models/user.model.js";
 
-export const updateUserRole = async (email, role) => {
-    return await UserModel.findOneAndUpdate({email}, {role});
-}
+export default class User {
+    updateUserRole = async (email, role) => {
+        try {
+            return await UserModel.findOneAndUpdate({ email }, { role });
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const updateUserPassword = async (email, password) => {
-    return await UserModel.findOneAndUpdate({email}, {password});
-}
+    updateUserPassword = async (email, password) => {
+        try {
+            return await UserModel.findOneAndUpdate({ email }, { password });
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const findUserByIdDAO = async (userId) => {
-    return await UserModel.findById(userId);
+    findUserById = async (userId) => {
+        try {
+            return await UserModel.findById(userId);
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 }

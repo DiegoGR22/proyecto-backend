@@ -1,5 +1,7 @@
 import { createHash, generateToken } from "../utils/authUtils.js";
-import { updateUserRole, updateUserPassword } from "../DAO/user.dao.js";
+import User, { updateUserRole, updateUserPassword } from "../DAO/user.dao.js";
+
+const userService = new User()
 
 export const register = async (req, res) => { 
     res.redirect('/login')
@@ -50,7 +52,7 @@ export const role = async (req, res) => {
     const roleModified = user.role === 'admin' ? 'user' : 'admin';
     
     try {
-        const modifiedUser = await updateUserRole(user.email, roleModified);
+        const modifiedUser = await userService.updateUserRole(user.email, roleModified);
 
         if (!modifiedUser) {
             console.error("User not found");
@@ -79,7 +81,7 @@ export const restorePswd = async (req, res) => {
     const { email, newPassword } = req.body;
     
     try {
-        const user = await updateUserPassword(email, createHash(newPassword));
+        const user = await userService.updateUserPassword(email, createHash(newPassword));
 
         if (!user) {
             console.error("User not found");

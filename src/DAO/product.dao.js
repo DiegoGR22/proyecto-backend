@@ -2,29 +2,62 @@ import { ProductModel } from "../models/product.model.js";
 import ProductManager from '../class/productManager.js';
 import { __dirname } from '../utils.js';
 
-export const productManager = new ProductManager(__dirname + '/data/product.json');
+export default class Product {
+    constructor() {
+        this.productManager = new ProductManager(__dirname + '/data/product.json');
+    }
 
+    getProducts = async ({ page, limit, cat, status, sort }) => {
+        try {
+            return await this.productManager.getProducts({ page, limit, cat, status, sort });
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const getProductsDAO = async ({ page, limit, cat, status, sort }) => {
-    return await productManager.getProducts({ page, limit, cat, status, sort })
-}
+    createProduct = async (product) => {
+        try {
+            return await ProductModel.create(product);
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const createProductDAO = async (product) => {
-    return await ProductModel.create(product);
-}
+    createManyProducts = async (products) => {
+        try {
+            return await ProductModel.insertMany(products);
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const createManyProductsDAO = async (products) => {
-    return await ProductModel.insertMany(products);
-}
+    findProduct = async (pid) => {
+        try {
+            return await ProductModel.findById(pid);
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const findProductDAO = async (pid) => {
-    return await ProductModel.findById(pid);
-}
+    updateProduct = async (pid, updatedProduct) => {
+        try {
+            return await ProductModel.findByIdAndUpdate(pid, updatedProduct, { new: true });
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 
-export const updateProductDAO = async (pid, updatedProduct) => {
-    return await ProductModel.findByIdAndUpdate(pid, updatedProduct, { new : true });
-}
-
-export const deleteProductDAO = async (pid) => {
-    return await ProductModel.findByIdAndDelete(pid);
+    deleteProduct = async (pid) => {
+        try {
+            return await ProductModel.findByIdAndDelete(pid);
+        } catch (error) {
+            console.error(error.message);
+            return null;
+        }
+    }
 }

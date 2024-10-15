@@ -1,10 +1,14 @@
-import { findCartsAndPopulateDAO, findCartByIdAndPopulateDAO, updateCartDAO, deleteCartDAO, findCartByIdDAO, updateExistingProductQuantityOnCartDAO, addProductOnCartDAO, deleteProductOnCartDAO, updateProductQuantityOnCart, createCartDAO, assignCartToUserDAO } from "../DAO/cart.dao.js";
-import { findProductDAO } from "../DAO/product.dao.js";
-import { findUserByIdDAO } from "../DAO/user.dao.js";
+import Cart from "../DAO/cart.dao.js";
+import User from "../DAO/user.dao.js";
+import Product from "../DAO/product.dao.js";
+
+const cartService = new Cart();
+const userService = new User();
+const productService = new Product();
 
 export const getCarts = async (req, res) => {
     try {
-        const result = await findCartsAndPopulateDAO();
+        const result = await cartService.findCartsAndPopulate();
         res.status(200).json({ message: "Carts found", payload: result })
     } catch (error) {
         res.status(400).json({ message: "Cart not found" })
@@ -16,7 +20,7 @@ export const createCart = async (req, res) => {
 
     try {
         // Busca el usuario por su ID
-        const user = await findUserByIdDAO(userId);
+        const user = await userService.findUserById(userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -28,10 +32,10 @@ export const createCart = async (req, res) => {
         }
 
         // Si el usuario no tiene un carrito, crea uno nuevo
-        const newCart = await createCartDAO()
+        const newCart = await cartService.createCart()
 
         // Asigna el ID del nuevo carrito al usuario y guarda el usuario
-        await assignCartToUserDAO(user, newCart._id)
+        await cartService.assignCartToUser(user, newCart._id)
 
         res.status(201).json({ message: 'Cart created', cartId: newCart._id });
     } catch (error) {
@@ -44,7 +48,7 @@ export const findCartByIdAndPopulate = async (req, res) => {
     const { cid } = req.params
 
     try {
-        const result = await findCartByIdAndPopulateDAO(cid)
+        const result = await cartService.findCartByIdAndPopulate(cid)
         res.status(200).json({ message: "Cart found successfully", payload: result })
     } catch (error) {
         res.status(404).json({ message: "Cart not found" })
@@ -55,7 +59,7 @@ export const updateCart = async (req, res) => {
     const { cid } = req.params
     const updatedCart = req.body
     try {
-        const result = await updateCartDAO(cid, updatedCart)
+        const result = await cartService.updateCart(cid, updatedCart)
         res.status(200).json({ message: "Cart updated successfully", payload: result });
     } catch (error) {
         res.status(404).json({ message: "Cart not found" });
@@ -65,7 +69,7 @@ export const updateCart = async (req, res) => {
 export const deleteCart = async (req, res) => {
     const { cid } = req.params
     try {
-        const result = await deleteCartDAO(cid)
+        const result = await cartService.deleteCart(cid)
         res.status(200).json({ message: "Cart deleted", payload: result });
     } catch (error) {
         res.status(500).json({ message: "Error deleting cart" })
@@ -77,23 +81,23 @@ export const addProductOnCart = async (req, res) => {
 
     try {
         // Verificar si el producto existe
-        const product = await findProductDAO(pid)
+        const product = await productService.findProduct(pid)
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
         // Verificar si el carrito existe
-        const cart = await findCartByIdDAO(cid);
+        const cart = await cartService.findCartById(cid);
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
         
         // Intentar actualizar la cantidad del producto existente
-        const updatedCart = await updateExistingProductQuantityOnCartDAO(cid, pid)
+        const updatedCart = await cartService.updateExistingProductQuantityOnCart(cid, pid)
 
         // Si el producto no se encuentra en el carrito, agregarlo
         if (!updatedCart) {
-            const cartUpdate = await addProductOnCartDAO(cid, pid)
+            const cartUpdate = await cartService.addProductOnCart(cid, pid)
 
             return res.status(201).json({ message: 'Product added to cart', payload: cartUpdate });
         }
@@ -108,19 +112,19 @@ export const addProductOnCart = async (req, res) => {
 export const deleteProductOnCart = async (req, res) => {
     const { cid, pid } = req.params
     try {
-        const cart = await findCartByIdDAO(cid);
+        const cart = await cartService.findCartById(cid);
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
 
-        const product = await findProductDAO(pid);
+        const product = await productService.findProduct(pid);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
         const initialProductCount = cart.products.length;
 
-        const updatedCart = await deleteProductOnCartDAO(cid, pid);
+        const updatedCart = await cartService.deleteProductOnCart(cid, pid);
 
         const finalProductCount = updatedCart.products.length;
 
@@ -147,17 +151,17 @@ export const updateProductOnCart = async (req, res) => {
     }
 
     try {
-        const cart = await findCartByIdDAO(cid);
+        const cart = await cartService.findCartById(cid);
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
 
-        const product = await findProductDAO(pid);
+        const product = await productService.findProduct(pid);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        const updatedCart = await updateProductQuantityOnCart(cid, pid);
+        const updatedCart = await cartService.updateProductQuantityOnCart(cid, pid);
 
         return res.status(200).json({ message: 'Quantity updated successfully', payload: updatedCart });
         

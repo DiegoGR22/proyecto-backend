@@ -1,65 +1,122 @@
 import { CartModel } from "../models/cart.model.js"
 
-export const findCartsAndPopulateDAO = async () => {
-    return await CartModel.find().populate('products.product')
-}
+export default class Cart {
+    findCartsAndPopulate = async () => {
+        try {
+            return await CartModel.find().populate('products.product')
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const createCartDAO = async () => {
-    const newCart = new CartModel({ products: [] });
-    await newCart.save();
-    return newCart;
-}
+    createCart = async () => {
+        try {
+            const newCart = new CartModel({ products: [] });
+            await newCart.save();
+            return newCart;
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const findCartByIdAndPopulateDAO = async (cid) => {
-    return await CartModel.findById(cid).populate('products.product')
-}
+    findCartByIdAndPopulate = async (cid) => {
+        try {
+            return await CartModel.findById(cid).populate('products.product')
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const updateCartDAO = async (cid, updatedCart) => {
-    return await CartModel.findByIdAndUpdate(cid, updatedCart, { new: true })
-}
+    updateCart = async (cid, updatedCart) => {
+        try {
+            return await CartModel.findByIdAndUpdate(cid, updatedCart, { new: true })
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const deleteCartDAO = async (cid) => {
-    return await CartModel.findByIdAndDelete(cid)
-}
+    deleteCart = async (cid) => {
+        try {
+            return await CartModel.findByIdAndDelete(cid)
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const findCartByIdDAO = async (cid) => {
-    return await CartModel.findById(cid)
-}
+    findCartById = async (cid) => {
+        try {
+            return await CartModel.findById(cid)
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const updateExistingProductQuantityOnCartDAO = async (cid, pid) => {
-    return await CartModel.findOneAndUpdate(
-        { _id: cid, 'products.product': pid },
-        { $inc: { 'products.$.quantity': 1 } },
-        { new: true }
-    );
-}
+    updateExistingProductQuantityOnCart = async (cid, pid) => {
+        try {
+            return await CartModel.findOneAndUpdate(
+                { _id: cid, 'products.product': pid },
+                { $inc: { 'products.$.quantity': 1 } },
+                { new: true }
+            );
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const addProductOnCartDAO = async (cid, pid) => {
-    return await CartModel.findByIdAndUpdate(
-        cid,
-        { $push: { products: { product: pid, quantity: 1 } } },
-        { new: true }
-    );
-}
+    addProductOnCart = async (cid, pid) => {
+        try {
+            return await CartModel.findByIdAndUpdate(
+                cid,
+                { $push: { products: { product: pid, quantity: 1 } } },
+                { new: true }
+            );
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const deleteProductOnCartDAO = async (cid, pid) => {
-    return await CartModel.findOneAndUpdate(
-        {_id: cid},
-        {$pull: {products: { product: pid } } },
-        {new: true}
-    );
-}
+    deleteProductOnCart = async (cid, pid) => {
+        try {
+            return await CartModel.findOneAndUpdate(
+                { _id: cid },
+                { $pull: { products: { product: pid } } },
+                { new: true }
+            );
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const updateProductQuantityOnCart = async (cid, pid) => {
-    return await CartModel.findOneAndUpdate(
-        { _id: cid, 'products.product': pid },
-        { $inc: { 'products.$.quantity': quantity } },
-        {new: true}
-    );
-}
+    updateProductQuantityOnCart = async (cid, pid, quantity) => {
+        try {
+            return await CartModel.findOneAndUpdate(
+                { _id: cid, 'products.product': pid },
+                { $inc: { 'products.$.quantity': quantity } },
+                { new: true }
+            );
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 
-export const assignCartToUserDAO = async (user, cartId) => {
-    user.cart = cartId;
-    await user.save();
-    return user
+    assignCartToUser = async (user, cartId) => {
+        try {
+            user.cart = cartId;
+            await user.save();
+            return user
+        } catch (error) {
+            console.error(error.message)
+            return null
+        }
+    }
 }

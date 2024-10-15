@@ -1,4 +1,6 @@
-import { createProductDAO, createManyProductsDAO, findProductDAO, updateProductDAO, deleteProductDAO, getProductsDAO } from '../DAO/product.dao.js';
+import Product from "../DAO/product.dao.js";
+
+const productService = new Product();
 
 export const getProducts = async (req, res) => {
     const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = req.query;
@@ -10,7 +12,7 @@ export const getProducts = async (req, res) => {
     }
 
     try {
-        const result = await getProductsDAO({ page, limit, cat, status, sort });
+        const result = await productService.getProducts({ page, limit, cat, status, sort });
 
         // Crear los enlaces para la página anterior y siguiente
         const prevLink = result.hasPrevPage ? `/products?page=${result.prevPage}&limit=${limit}&query=${query}&sort=${sort}` : null;
@@ -41,7 +43,7 @@ export const createProduct = async (req, res) => {
     const product = req.body;
 
     try {
-        const result = await createProductDAO(product);;
+        const result = await productService.createProduct(product);;
         res.status(201).json({ message: "Product created", payload: result });
     } catch (error) {
         res.status(500).json({ message: "Product not created!" });
@@ -56,7 +58,7 @@ export const createManyProducts = async (req, res) => {
     }
 
     try {
-        const result = await createManyProductsDAO(products);
+        const result = await productService.createManyProductt(products);
         res.status(201).json({ message: "Product created", payload: result });
     } catch (error) {
         res.status(500).json({ message: "Product not created!" });
@@ -67,7 +69,7 @@ export const getProductById = async (req, res) => {
     const { pid } = req.params
 
     try {
-        const product = await findProductDAO(pid);
+        const product = await productService.findProduct(pid);
 
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
@@ -85,7 +87,7 @@ export const updateProduct = async (req, res) => {
     const updatedProduct = req.body
 
     try {
-        const product = await updateProductDAO(pid, updatedProduct)
+        const product = await productService.updateProduct(pid, updatedProduct)
         
         if (product === null) {
             res.status(404).json({ message: 'Product not found' });
@@ -101,7 +103,7 @@ export const deleteProduct = async (req, res) => {
     const { pid } = req.params
 
     try {
-        const product = await deleteProductDAO(pid);
+        const product = await productService.deleteProduct(pid);
 
         if (product === null) {
             res.status(404).json({ message: 'Product not found' });

@@ -1,5 +1,8 @@
-import { findCartByIdAndPopulateDAO } from "../DAO/cart.dao.js";
-import { getProductsDAO } from "../DAO/product.dao.js";
+import Cart from "../DAO/cart.dao.js";
+import Product from "../DAO/product.dao.js";
+
+const cartService = new Cart()
+const productService = new Product()
 
 export const home = async (req, res) => {
     try {
@@ -16,7 +19,7 @@ export const productList = async (req, res) => {
     const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = req.query;
 
     try {
-        const result = await getProductsDAO({ page, limit, cat, status, sort });
+        const result = await productService.getProducts({ page, limit, cat, status, sort });
 
             res.render('products', {
                 products: result.docs,
@@ -42,7 +45,7 @@ export const cart = async (req, res) => {
     
     try {
         // Busca el carrito por ID
-        const cart = await findCartByIdAndPopulateDAO(cid);
+        const cart = await cartService.findCartByIdAndPopulate(cid);
         // console.log("🚀 ~ router.get ~ cart:", cart)
 
         if (!cart) {
