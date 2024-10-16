@@ -1,5 +1,5 @@
 import { createHash, generateToken } from "../utils/authUtils.js";
-import User, { updateUserRole, updateUserPassword } from "../DAO/user.dao.js";
+import User from "../DAO/user.dao.js";
 
 const userService = new User()
 

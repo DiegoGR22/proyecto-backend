@@ -2,12 +2,11 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
 import ProductRouter from './routes/api/product.router.js';
-import { productManager } from './DAO/product.dao.js';
+import Product from './DAO/product.dao.js';
 import CartRouter from './routes/api/cart.router.js';
 import ViewsRouter from './routes/views.routes.js';
 import { Server } from 'socket.io'
 import mongoose, { mongo } from 'mongoose';
-import 'dotenv/config';
 import { ProductModel } from './models/product.model.js';
 import { CartModel } from './models/cart.model.js';
 import cookieParser from 'cookie-parser';
@@ -16,10 +15,11 @@ import MongoStore from 'connect-mongo'
 import UserRouter from './routes/api/user.routes.js'
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
+import config from './config/config.js';
 
 const app = express();
-const PORT = process.env.PORT1 || 3000;
-const mongoUri = process.env.MONGODB_URI;
+const PORT = config.port || 3000;
+const mongoUri = config.mongoUri;
 
 app.engine('handlebars', handlebars.engine({
     runtimeOptions: {

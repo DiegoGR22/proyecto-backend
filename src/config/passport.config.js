@@ -5,6 +5,7 @@ import { createHash, validatePassword } from "../utils/authUtils.js";
 import GitHubStrategy from 'passport-github2'
 import jwt from 'passport-jwt'
 import { CartModel } from "../models/cart.model.js";
+import config from "./config.js";
 
 const localStrategy = local.Strategy
 
@@ -111,7 +112,7 @@ const initializePassport = () => {
 
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractorJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: process.env.SECRET_KEY
+        secretOrKey: config.passportKey
     }, async (jwt_payload, done) => {
         try {
             return done(null, jwt_payload)

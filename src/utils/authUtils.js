@@ -1,6 +1,6 @@
 import bcrypt, { genSaltSync } from 'bcrypt';    
 import jwt from 'jsonwebtoken';
-import 'dotenv/config';
+import config from '../config/config.js';
 
 //* BCRYPT
 
@@ -11,7 +11,7 @@ export const createHash = password => bcrypt.hashSync(password, genSaltSync(10))
 export const validatePassword = (user, password) => bcrypt.compareSync(password, user.password)
 
 //* JWT
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY = config.passportKey;
 
 export const generateToken = (user) => {
     const token = jwt.sign({ _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, age: user.age, role: user.role, cart: user.cart  }, SECRET_KEY, { expiresIn: '24h' })
