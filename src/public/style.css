@@ -149,3 +149,11 @@ p {
 .github-btn:focus {
     outline: #e5dbdb 5px solid;
 }
+
+.cartProduct {
+    border: 1px black solid;
+    width: 400px;
+    display: inline-block;
+    padding: 20px;
+    margin: 0px 0px 10px 10px;
+}
