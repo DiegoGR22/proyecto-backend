@@ -103,3 +103,23 @@ export const currentLog = async (req, res) => {
         user: req.user
     });
 }
+
+export const purchase = async (req, res) => {
+    const { cid } = req.params;
+    
+    try {
+        // Busca el carrito por ID
+        const cart = await cartService.findCartByIdAndPopulate(cid);
+        // console.log("🚀 ~ router.get ~ cart:", cart)
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        // Renderiza la vista de carritos pasando los datos del carrito
+        res.render('purchase', { cart }) 
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving cart', error: error.message });
+        console.error(error.message)
+    }
+}

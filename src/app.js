@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 import handlebars from 'express-handlebars';
 import { __dirname } from './utils.js';
 import ProductRouter from './routes/api/product.router.js';
@@ -16,6 +16,7 @@ import UserRouter from './routes/api/user.routes.js'
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import config from './config/config.js';
+import PurchaseRouter from './routes/api/purchase.router.js'
 
 const app = express();
 const PORT = config.port || 3000;
@@ -25,6 +26,9 @@ app.engine('handlebars', handlebars.engine({
     runtimeOptions: {
         allowProtoPropertiesByDefault: true,
         allowProtoMethodsByDefault: true
+    },
+    helpers: {
+        json: (context) => JSON.stringify(context)
     }
 }));
 app.set('views', __dirname + '/views');
@@ -54,6 +58,7 @@ app.use('/', ViewsRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/carts', CartRouter);
 app.use('/api/session', UserRouter);
+app.use('/api/purchase', PurchaseRouter);
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Server listening on PORT ${PORT}`);
@@ -66,6 +71,7 @@ mongoose.connect(mongoUri, {
 })
 
 const io = new Server(httpServer);
+const product = new Product()
 
 io.on('connection', async (socket) => {
     console.log("New connection established", socket.id)
@@ -74,7 +80,7 @@ io.on('connection', async (socket) => {
         try {
             // console.log("🚀 ~ socket.on ~ params:", params)
             const { page = 1, limit = 10, cat = "", status = "", sort = "desc" } = params;
-            const products = await productManager.getProducts({ page, limit, cat, status, sort });
+            const products = await product.productManager.getProducts({ page, limit, cat, status, sort });
 
             socket.emit('products', {
                 products: products.docs,

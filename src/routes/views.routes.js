@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { passportCall } from '../utils/passportUtils.js'
 import { isNotAuth, isAdmin } from '../middleware/auth.js';
-import { cart, currentLog, errorPage, home, login, productList, realTimeProductList, register, restorePswd, userProfile } from '../controllers/views.controller.js';
+import { cart, currentLog, errorPage, home, login, productList, purchase, realTimeProductList, register, restorePswd, userProfile } from '../controllers/views.controller.js';
 
 const router = Router();
 
@@ -24,5 +24,7 @@ router.get('/error', errorPage);
 router.get('/restore-password', restorePswd)
 
 router.get('/current', currentLog)
+
+router.get('/purchase/:cid', purchase)
 
 export default router;

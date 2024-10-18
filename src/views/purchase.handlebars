@@ -1,0 +1,32 @@
+<h1>PURCHASE</h1>
+
+<div class="d-flex justify-content-between w-100">
+    <div class="d-flex">
+        <a href="/"><button class="btn btn-success my-2 mx-1">Home</button></a>
+        <a href="/products"><button class="btn btn-success my-2 mx-1">Lista de productos</button></a>
+    </div>
+
+    <div class="d-flex">
+        <a href="/carts/{{cart._id}}"><button class="btn btn-primary mx-1">Cart</button></a>
+        <form action="/api/session/logout" method="POST">
+            <button type="submit" class="btn btn-danger mx-1">Log Out</button>
+        </form>
+    </div>
+</div>
+
+<div id="pageContainer">
+    <div id="cartContainer"></div>
+</div>
+
+
+<script>const cart = {{{json cart}}}</script>
+<script src="/purchase.js"></script>
+
+<style>
+    .overStock {
+        opacity: 0.5;
+        pointer-events: none;
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>
