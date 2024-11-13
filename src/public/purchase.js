@@ -1,6 +1,7 @@
-function renderCart(cart) {
+function renderCart(cart, user) {
     // Verificar el objeto cart en la consola
     console.log(cart);
+    console.log(user);
 
     const pageContainer = document.getElementById("pageContainer");
 
@@ -8,7 +9,7 @@ function renderCart(cart) {
     container.innerHTML = ""; // Limpiar el contenedor
 
     cart.products.forEach((product) => {
-        product.isOverStock = product.quantity >= product.product.stock;
+        product.isOverStock = product.quantity > product.product.stock;
 
         const productHTML = `
             <div class="cartProduct ${product.isOverStock ? "overStock" : ""}">
@@ -88,9 +89,37 @@ function renderCart(cart) {
                 total += product.quantity * product.product.price;
             });
 
+            try {
+
+                const ticketResponse = await fetch('/api/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        products: availableProducts.map(p => ({
+                            product: p.product._id,
+                            quantity: p.quantity
+                        })),
+                        total: total,
+                        user: user.email
+                    })
+                });
+
+                if (!ticketResponse.ok) {
+                    throw new Error('Failed to create ticket');
+                }
+
+                const ticketData = await ticketResponse.json();
+                console.log('Ticket created:', ticketData);
+
             // Actualizar el contenedor pageContainer con los productos disponibles
             pageContainer.innerHTML = productsHTML || "No products available for purchase.";
             pageContainer.innerHTML += `<p>Total: ${total}</p>`;
+        } catch (error) {
+            console.error('Error:', error);
+            pageContainer.innerHTML = `Error processing purchase: ${error.message}`;
+        }
         }, 2000);
     });
 
@@ -98,5 +127,5 @@ function renderCart(cart) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    renderCart(cart);
+    renderCart(cart, user);
 });

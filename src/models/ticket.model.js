@@ -1,18 +1,23 @@
 import { Schema, model } from 'mongoose'
 
-const TicketSchema = new Schema({
-    code: {
+const ProductSchema = new Schema({
+    product: {
         type: Schema.Types.ObjectId,
-        ref: "users",
-        required: true,
-        unique: true
+        ref: 'products',  // Referencia al modelo de productos
     },
+    quantity: {
+        type: Number,
+        default: 1,
+    },
+},{_id: false})
+
+const TicketSchema = new Schema({
     dateTime: {
         type: Date,
         default: Date.now
     },
     products: {
-        type: [String],
+        type: [ProductSchema],
         required: true
     },
     total: {
@@ -20,8 +25,7 @@ const TicketSchema = new Schema({
         required: true
     },
     user: {
-        type: Schema.Types.ObjectId,
-        ref: 'users.email',
+        type: String,
         required: true
     },
 })

@@ -3,7 +3,12 @@ import { TicketModel } from "../models/ticket.model.js"
 export default class Purchase {
     getTicket = async () => {
         try {
-            return await TicketModel.find()
+            const result =  TicketModel.find().populate({
+                path: 'products.product',
+                model: 'products'
+            })
+            
+            return result;
         } catch (error) {
             console.error(error.message)
         }

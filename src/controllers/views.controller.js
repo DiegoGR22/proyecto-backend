@@ -116,8 +116,14 @@ export const purchase = async (req, res) => {
             return res.status(404).json({ message: 'Cart not found' });
         }
 
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ message: 'User not authenticated' });
+        }
+
         // Renderiza la vista de carritos pasando los datos del carrito
-        res.render('purchase', { cart }) 
+        res.render('purchase', { cart, user }); 
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving cart', error: error.message });
         console.error(error.message)
