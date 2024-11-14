@@ -1,4 +1,5 @@
 import { UserModel } from "../models/user.model.js";
+import { UserDTO } from "../DTO/user.dto.js";
 
 export default class User {
     updateUserRole = async (email, role) => {
@@ -21,7 +22,8 @@ export default class User {
 
     findUserById = async (userId) => {
         try {
-            return await UserModel.findById(userId);
+            const user = await UserModel.findById(userId);
+            return user ? new UserDTO(user) : null;
         } catch (error) {
             console.error(error.message);
             return null;
