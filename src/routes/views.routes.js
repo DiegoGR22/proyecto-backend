@@ -5,7 +5,7 @@ import { cart, currentLog, errorPage, home, login, productList, purchase, realTi
 
 const router = Router();
 
-router.get('/', home)
+router.get('/', passportCall('jwt'), home)
 
 router.get('/products', productList)
 
