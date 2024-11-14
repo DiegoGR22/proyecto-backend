@@ -89,6 +89,11 @@ function renderCart(cart, user) {
                 total += product.quantity * product.product.price;
             });
 
+            console.log(availableProducts.map(p => ({
+                product: p.product._id,
+                quantity: p.quantity
+            })))
+
             try {
 
                 const ticketResponse = await fetch('/api/purchase', {
@@ -112,6 +117,23 @@ function renderCart(cart, user) {
 
                 const ticketData = await ticketResponse.json();
                 console.log('Ticket created:', ticketData);
+
+                const updateProductQuantity = await fetch('/api/products/updateStock', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        products: availableProducts.map(p => ({
+                            product: p.product._id,
+                            quantity: p.quantity
+                        }))
+                    })
+                })
+
+                if (!updateProductQuantity.ok) {
+                    throw new Error('Failed to update product stock');
+                }
 
             // Actualizar el contenedor pageContainer con los productos disponibles
             pageContainer.innerHTML = productsHTML || "No products available for purchase.";

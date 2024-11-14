@@ -116,3 +116,24 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ message: 'Error fetching product' });
     }
 }
+
+export const updateProductStock = async (req, res) => {
+    const { products } = req.body
+    console.log("Productos recibidos", products)
+
+    try {
+         // Iterar sobre los productos para actualizar su stock individualmente
+        const updateResults = await Promise.all(products.map(async ({ product, quantity }) => {
+            console.log(`Updating product: ${product}, Quantity: ${quantity}`);  // Verifica cada producto
+
+            const prod = await productService.updateProductStock(product, quantity);
+            console.log('Product update result:', prod);  // Verifica el resultado de la actualización
+
+            return prod ? { product, success: true } : { product, success: false };
+        }));
+
+        res.status(200).json({ message: 'Product stocks updated!', updateResults });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating product stocks' });
+    }
+}
